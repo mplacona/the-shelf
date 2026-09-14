@@ -1,2 +1,1522 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Shelf — Board Game Collection</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"><style>:root{--paper:#efe6d8;--card:#fffbf4;--ink:#241a12;--soft:#6b625a;--rule:#d9cdbd;--green:#1e4638;--brass:#b98a44;--brick:#8a3c2e}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Work Sans,sans-serif}.wrap{max-width:1220px;margin:auto;padding:56px 24px 80px}header{border-bottom:1px solid var(--rule);padding-bottom:28px}h1,h2{font-family:Fraunces,serif;font-weight:300;text-transform:uppercase;letter-spacing:.03em}h1{font-size:clamp(2rem,6vw,3.6rem);margin:0 0 10px;line-height:1}.sub{color:var(--soft);max-width:66ch;line-height:1.55}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:26px 0 8px}input,button{font:inherit;border:1px solid var(--rule);border-radius:7px;padding:10px 14px;background:var(--card);color:var(--ink)}input{min-width:220px;flex:1}.chip{cursor:pointer}.chip.active{background:var(--brass);border-color:var(--brass)}.count{color:var(--soft);font-size:13px;margin:14px 0 24px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}.game{background:var(--card);border:1px solid var(--rule);border-radius:5px;overflow:hidden;box-shadow:0 1px 2px #241a120d}.banner{height:82px;background:linear-gradient(135deg,var(--c),#20140c);display:flex;align-items:center;padding:18px;color:#fffbf4;font:600 28px Fraunces,serif;letter-spacing:.08em}.content{padding:18px}.game h2{font-size:22px;margin:0 0 8px;line-height:1.1}.tagline{color:var(--soft);font-size:14px;min-height:42px;line-height:1.45}.meta{border-top:1px solid var(--rule);padding-top:12px;color:var(--soft);font-size:12px;line-height:1.7}.type{display:inline-block;background:var(--c);color:#fff;padding:5px 8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;border-radius:3px}footer{margin-top:44px;border-top:1px solid var(--rule);padding-top:22px;color:var(--soft);font-size:13px}@media(max-width:620px){.wrap{padding:36px 14px 60px}}</style></head><body><main class="wrap"><header><h1>Board Game Collection</h1><p class="sub">Everything on the shelf — from quick card games to weekend strategy games.</p></header><div class="toolbar"><input id="search" placeholder="Search a game…"><button class="chip active" data-filter="all">All</button><button class="chip" data-filter="Strategy">Strategy</button><button class="chip" data-filter="Family">Family</button><button class="chip" data-filter="Card Game">Card Game</button><button class="chip" data-filter="Party">Party</button><button class="chip" data-filter="Deduction/Horror">Horror & Mystery</button></div><p class="count" id="count"></p><section class="grid" id="grid"></section><footer>Catalogued from the shelf, the top of the cabinet, and a few loose stacks — <span id="total"></span> games in all.</footer></main><script>const games=[['The Quacks of Quedlinburg','Family','Push your luck pulling ingredients from the bag before your pot boils over.','2–4','45 min'],['Carcassonne','Family','Build a medieval landscape one tile at a time, then stake your claim on it.','2–5','35 min'],['Kingdomino','Family','Draft dominoes into the best five by five kingdom.','2–4','20 min'],['Catan Card Game','Strategy','The two player duel version of Catan, played entirely in cards.','2','45 min'],['Delivery Witches','Family','', '1–4','60 min'],['Legend of the Five Rings: The Card Game','Card Game','Seven clans of Rokugan fight for honour, land and the Emperor’s favour.','2',''],['Starfluxx','Card Game','The rules and the goal keep changing, somewhere out in deep space.','2–6','10–40 min'],['Gloom','Card Game','Make your own family miserable, then kill them off while they are at their lowest.','2–4','60 min'],['Happy Little Dinosaurs','Card Game','Dodge meteors, drama and natural disasters with a cheerful cartoon dinosaur.','2–4','30–60 min'],['Critter Kitchen','Family','Run a restaurant kitchen staffed entirely by animals.','1–4','60 min'],['Wingspan Pocket','Strategy','The full Wingspan engine, shrunk down to fit in a coat pocket.','1–5','25–35 min'],['Flip 7','Card Game','Flip cards until you either hit seven different numbers or bust.','3+','20 min'],['Tokaido','Family','Travel the old road from Kyoto to Edo, and take your time doing it.','2–5','45 min'],['Ticket to Ride: Europe','Strategy','Claim rail routes across Europe with tunnels, ferries and stations in the way.','2–5','45–60 min'],['Flamecraft','Strategy','Place artisan dragons in shops and enchant the town as you go.','1–5','60 min'],['Takenoko','Family','Grow a bamboo garden while a hungry panda eats his way through it.','2–4','45 min'],['Azul','Strategy','Draft ceramic tiles for the palace wall and leave your opponents the scraps.','2–4','30–45 min'],['Elder Sign','Deduction/Horror','Roll your way through a haunted museum before the ancient one wakes.','1–8','60–90 min'],['Trails','Family','A short hike through a national park, collecting birds, views and badges.','2–4','20–40 min'],['Love Letter','Card Game','Sixteen cards, one in hand, and a court full of people worth suspecting.','2–4','20 min'],['Doctor Who Fluxx','Card Game','The rules keep changing, and so does the Doctor.','2–6','5–30 min']];const c={Strategy:'#1e4638',Family:'#b98a44','Card Game':'#8a3c2e',Party:'#6b4a8a','Deduction/Horror':'#3a3a3a'},grid=document.querySelector('#grid'),search=document.querySelector('#search'),count=document.querySelector('#count');let filter='all';function render(){const q=search.value.toLowerCase(),list=games.filter(g=>(filter==='all'||g[1]===filter)&&g[0].toLowerCase().includes(q));count.textContent=`Showing ${list.length} of ${games.length} games`;grid.innerHTML=list.map(g=>`<article class="game" style="--c:${c[g[1]]}"><div class="banner">${g[0].split(' ').filter(x=>!['The','of','the'].includes(x)).slice(0,2).map(x=>x[0]).join('')}</div><div class="content"><span class="type">${g[1]}</span><h2>${g[0]}</h2><p class="tagline">${g[2]}</p><div class="meta">Players: ${g[3]||'—'}<br>Duration: ${g[4]||'—'}</div></div></article>`).join('')}document.querySelector('#total').textContent=games.length;search.oninput=render;document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});render()</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Shelf — Board Game Collection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#efe6d8;
+    --card:#fffbf4;
+    --ink:#241a12;
+    --ink-soft:rgba(36,26,18,0.60);
+    --ink-faint:rgba(36,26,18,0.42);
+    --rule:rgba(36,26,18,0.12);
+    --walnut-deep:#20140c;
+    --felt:#1e4638;
+    --felt-light:#2c5c4a;
+    --brass:#b98a44;
+    --brick:#8a3c2e;
+
+    --good:#cfe0da;      --good-ink:#1e4638;
+    --great:#f0dcb4;     --great-ink:#7a5615;
+    --awesome:#f2cfc2;   --awesome-ink:#8a3c2e;
+    --easy:#cfe0da;      --easy-ink:#1e4638;
+    --moderate:#f0dcb4;  --moderate-ink:#7a5615;
+    --hard:#eabfb2;      --hard-ink:#8a3c2e;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 0%, rgba(185,138,68,0.16), transparent 42%),
+      radial-gradient(circle at 88% 100%, rgba(30,70,56,0.12), transparent 48%);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{ max-width:1220px; margin:0 auto; padding:56px 24px 80px; }
+
+  header{ border-bottom:1px solid var(--rule); padding-bottom:28px; }
+  h1{
+    font-family:'Fraunces', serif; font-weight:300;
+    font-size:clamp(2rem, 6vw, 3.6rem);
+    letter-spacing:0.03em; text-transform:uppercase;
+    margin:0 0 10px; line-height:1;
+  }
+  .sub{ max-width:66ch; color:var(--ink-soft); font-size:15px; line-height:1.55; margin:0; }
+
+  .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:26px 0 6px; }
+  #search{
+    flex:1 1 200px; max-width:280px;
+    background:var(--card); border:1px solid var(--rule); color:var(--ink);
+    padding:10px 14px; border-radius:7px;
+    font-family:'Work Sans', sans-serif; font-size:15px;
+    outline:none; transition:border-color 0.15s ease;
+  }
+  #search::placeholder{ color:var(--ink-faint); }
+  #search:focus{ border-color:var(--brass); }
+
+  .chip{
+    background:transparent; border:1px solid var(--rule); color:var(--ink-soft);
+    padding:9px 16px; border-radius:999px;
+    font-family:'Work Sans', sans-serif; font-size:14px;
+    cursor:pointer; transition:all 0.15s ease; white-space:nowrap;
+  }
+  .chip:hover{ border-color:var(--brass); color:var(--ink); }
+  .chip:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
+  .chip.active{ background:var(--brass); border-color:var(--brass); color:var(--walnut-deep); font-weight:600; }
+
+  .switch{
+    margin-left:auto;
+    background:transparent; border:none; cursor:pointer;
+    font-family:'Work Sans', sans-serif; font-size:14px; color:var(--brick);
+    border-bottom:1px solid rgba(138,60,46,0.35); padding:0 0 2px;
+  }
+  .switch:hover{ border-bottom-color:var(--brick); }
+  .switch:focus-visible{ outline:2px solid var(--brass); outline-offset:3px; }
+
+  .count-line{ color:var(--ink-faint); font-size:13px; margin:14px 0 24px; }
+
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* ---------- Collection table ---------- */
+
+  .sheet{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:5px;
+    padding:26px 26px 20px;
+    box-shadow:0 1px 2px rgba(36,26,18,0.05);
+    overflow-x:auto;
+  }
+  table{ width:100%; border-collapse:collapse; min-width:760px; }
+  thead th{
+    text-align:left; font-size:12.5px; font-weight:600;
+    padding:0 8px 10px; border-bottom:1px solid var(--rule); white-space:nowrap;
+  }
+  thead th.c{ text-align:center; }
+  tbody tr{ cursor:pointer; }
+  tbody tr:hover td{ background:rgba(185,138,68,0.10); }
+  tbody tr:focus-within td{ background:rgba(185,138,68,0.14); }
+  td{ padding:5px 8px; font-size:13px; color:var(--ink-soft); vertical-align:middle; }
+  td.row-title a{ color:var(--ink-soft); text-decoration:none; display:block; padding:2px 0; }
+  tbody tr:hover td.row-title a{ color:var(--ink); }
+  td.row-title a:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; border-radius:2px; }
+  td.num{ text-align:center; white-space:nowrap; }
+
+  .band{
+    display:block; text-align:center; padding:4px 8px; border-radius:2px;
+    font-size:12px; font-weight:500;
+    color:var(--band-ink, var(--ink-soft)); background:var(--band-bg, transparent);
+  }
+  .band.none{ color:var(--ink-faint); background:rgba(36,26,18,0.035); font-style:italic; }
+  .flag{
+    display:block; text-align:center; padding:4px 8px; border-radius:2px;
+    font-size:12px; background:rgba(36,26,18,0.06); color:var(--ink-soft);
+  }
+  .group td{
+    padding:26px 8px 6px;
+    font-family:'Fraunces', serif; font-size:15px; font-weight:600; color:var(--ink);
+  }
+  .group:first-child td{ padding-top:14px; }
+  .group:hover td{ background:transparent; }
+  .group td span{
+    display:inline-block; width:9px; height:9px; border-radius:2px;
+    background:var(--tag-color); margin-right:8px;
+  }
+  .key{
+    margin-top:22px; padding-top:16px; border-top:1px solid var(--rule);
+    font-size:12px; color:var(--ink-faint); line-height:1.6;
+  }
+
+  /* ---------- Card view ---------- */
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(470px, 1fr)); gap:26px; }
+
+  .game{
+    scroll-margin-top:24px;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:5px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow:0 1px 2px rgba(36,26,18,0.05);
+  }
+  .game.targeted{ border-color:var(--brass); box-shadow:0 0 0 3px rgba(185,138,68,0.35); }
+  @media (prefers-reduced-motion: no-preference){
+    .game{ transition:box-shadow 0.4s ease, border-color 0.4s ease; }
+  }
+
+  .banner{ position:relative; height:180px; overflow:hidden; background:var(--walnut-deep); }
+  .banner-img{ position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:cover; }
+  .banner-fallback{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      repeating-linear-gradient(135deg, rgba(0,0,0,0.10) 0 12px, transparent 12px 24px),
+      linear-gradient(155deg, var(--tag-color, var(--felt-light)), var(--walnut-deep));
+  }
+  .banner-fallback span{
+    font-family:'Fraunces', serif; font-weight:700;
+    font-size:40px; letter-spacing:0.08em; color:rgba(255,251,244,0.85);
+  }
+
+  .head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:18px 24px 0; }
+  .game-title{
+    font-family:'Fraunces', serif; font-weight:300;
+    font-size:29px; line-height:1.05; letter-spacing:0.01em;
+    margin:0; text-transform:uppercase;
+  }
+  .at-a-glance{ display:flex; gap:14px; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; padding-bottom:4px; }
+  .at-a-glance span{ display:flex; align-items:center; gap:4px; }
+
+  .tagline{ padding:8px 24px 16px; font-size:14px; line-height:1.45; color:var(--ink-soft); }
+
+  .body{
+    display:grid; grid-template-columns:0.95fr 1.75fr 0.7fr; gap:22px;
+    padding:16px 24px 18px; border-top:1px solid var(--rule);
+  }
+  .facts{ font-size:12px; line-height:1.5; color:var(--ink-soft); }
+  .facts div{ margin-bottom:5px; }
+  .facts b{ color:var(--ink); font-weight:600; }
+
+  .blurb{ font-size:12.5px; line-height:1.5; color:var(--ink-soft); }
+  .blurb p{ margin:0; column-count:2; column-gap:16px; }
+  .blurb p::first-letter{
+    float:left;
+    font-family:'Fraunces', serif; font-weight:600; font-size:26px; line-height:1;
+    background:var(--tag-color, var(--felt)); color:var(--card);
+    padding:9px 11px; margin:2px 8px 0 0;
+  }
+
+  .rail{ display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
+  .rail > div{ width:100%; }
+  .rail .label{ font-size:11px; font-style:italic; color:var(--ink-faint); }
+  .type-tag{
+    width:100%; background:var(--tag-color, var(--felt)); color:#fffbf4;
+    font-size:11.5px; font-weight:600; letter-spacing:0.06em;
+    padding:9px 6px; border-radius:3px; text-transform:uppercase;
+  }
+  .scores{
+    width:100%; display:flex; flex-wrap:wrap; justify-content:center; gap:4px 8px;
+    background:rgba(36,26,18,0.05); border-radius:3px;
+    padding:9px 6px; font-size:12.5px; font-weight:500; text-align:center;
+  }
+  .scores i{ color:var(--ink-faint); font-style:normal; }
+  .score-labels{ display:flex; justify-content:space-between; width:100%; font-size:11px; font-style:italic; color:var(--ink-faint); padding:0 6px; }
+
+  .sleeves{
+    border-top:1px dashed var(--rule); background:rgba(36,26,18,0.03);
+    padding:11px 24px; font-size:12px; line-height:1.4; color:var(--ink-soft);
+    margin-top:auto;
+  }
+
+  .empty{ padding:50px 0; text-align:center; color:var(--ink-faint); font-size:15px; }
+
+  footer{ margin-top:44px; padding-top:22px; border-top:1px solid var(--rule); font-size:13px; color:var(--ink-faint); }
+
+  @media (max-width: 900px){
+    .grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 620px){
+    .wrap{ padding:36px 14px 60px; }
+    .sheet{ padding:18px 14px 14px; }
+    .switch{ margin-left:0; }
+    .body{ grid-template-columns:1fr; gap:16px; }
+    .blurb p{ column-count:1; }
+    .rail{ flex-direction:row; flex-wrap:wrap; align-items:center; justify-content:flex-start; }
+    .rail > div{ width:auto; }
+    .score-labels{ display:none; }
+    .head{ flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Board Game Collection</h1>
+    <p class="sub">Everything on the shelf — from quick card games to weekend strategy games. Pick a row to open its card, where the box art, sleeve sizes and the rest of the detail live.</p>
+  </header>
+
+  <div class="toolbar">
+    <input id="search" type="text" placeholder="Search a game…" />
+    <button class="chip active" data-filter="all" id="allChip">All</button>
+    <button class="chip" data-filter="Strategy">Strategy</button>
+    <button class="chip" data-filter="Family">Family</button>
+    <button class="chip" data-filter="Card Game">Card Game</button>
+    <button class="chip" data-filter="Party">Party</button>
+    <button class="chip" data-filter="Kids">Kids</button>
+    <button class="chip" data-filter="Deduction/Horror">Horror &amp; Mystery</button>
+    <button class="switch" id="switchView"></button>
+  </div>
+
+  <div class="count-line" id="countLine"></div>
+
+  <section class="view active" id="collectionView">
+    <div class="sheet">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Game type</th>
+            <th class="c">Rating</th>
+            <th class="c">Difficulty</th>
+            <th class="c">Players</th>
+            <th class="c">Duration</th>
+            <th class="c"></th>
+            <th class="c"></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="empty" id="emptyTable" style="display:none;">No games match that search.</div>
+      <p class="key">Rating is your own verdict and stays blank until you set it in the list at the top of this file. Difficulty is how heavy the game plays. Solo and 2 Player come from the player count, Coop is set per game.</p>
+    </div>
+  </section>
+
+  <section class="view" id="cardsView">
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyCards" style="display:none;">No games match that search.</div>
+  </section>
+
+  <footer>Catalogued from the shelf, the top of the cabinet, and a few loose stacks — <span id="totalCount"></span> games in all.</footer>
+</div>
+
+<script>
+/* THE SHELF — shared game data
+   Both index.html (the collection table) and board-game-library.html (the cards)
+   read this file, so every game only needs editing in one place.
+
+   rating     your own verdict: "Good", "Great" or "Awesome". Left blank for you
+              to fill in, since it is an opinion and not mine to make up.
+   difficulty how heavy the game plays: "Easy", "Moderate" or "Hard".
+   coop       true for cooperative games. Solo and 2 Player badges are worked
+              out from the players field, so they need no data of their own.
+   image      optional URL. With no image, the page looks for
+              images/<game-name-in-dashes>.jpg (also .jpeg, .png, .webp).
+*/
+
+const colors = {
+  "Strategy": "#1e4638",
+  "Family": "#b98a44",
+  "Card Game": "#8a3c2e",
+  "Party": "#6b4a8a",
+  "Kids": "#2f6d8c",
+  "Deduction/Horror": "#3a3a3a"
+};
+
+/* Games are sorted into CATEGORY_ORDER below on load, so you can add a new
+   one anywhere in this list without worrying about where it sits. */
+const games = [
+  {
+    name: "The Quacks of Quedlinburg",
+    category: "Family",
+    tagline: "Push your luck pulling ingredients from the bag before your pot boils over.",
+    year: "2018",
+    publisher: "Schmidt Spiele",
+    designer: "Wolfgang Warsch",
+    artist: "Dennis Lohausen",
+    theme: "Medieval, Alchemy",
+    mechanics: "Push Your Luck, Bag Building, Set Collection",
+    players: "2–4",
+    time: "45 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Each round you draw ingredient chips out of your bag one at a time, pushing further for a stronger potion. Pull one cherry bomb too many and the pot explodes, costing you either the points or the money you were counting on for the next market.",
+    sleeves: "No cards — bag-building game",
+    image: "",
+  },
+  {
+    name: "Carcassonne",
+    category: "Family",
+    tagline: "Build a medieval landscape one tile at a time, then stake your claim on it.",
+    year: "2000",
+    publisher: "Hans im Glück",
+    designer: "Klaus-Jürgen Wrede",
+    artist: "Doris Matthäus",
+    theme: "Medieval, City Building",
+    mechanics: "Tile Placement, Area Majority",
+    players: "2–5",
+    time: "35 min",
+    age: "7+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Draw a landscape tile, place it against what is already on the table, and decide whether to spend one of your followers on a road, city, cloister or field. Scoring comes from closing features off before anyone else can muscle in on them.",
+    sleeves: "No cards — tile-laying game",
+    image: "",
+  },
+  {
+    name: "Kingdomino",
+    category: "Family",
+    tagline: "Draft dominoes into the best five by five kingdom you can manage in twenty minutes.",
+    year: "2016",
+    publisher: "Blue Orange Games",
+    designer: "Bruno Cathala",
+    artist: "Cyril Bouquet",
+    theme: "Medieval, Territory",
+    mechanics: "Tile Drafting, Tile Placement, Pattern Building",
+    players: "2–4",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Each domino shows two terrain squares, and the drafting order punishes greed: the better the tile you take, the later you choose next round. Five rounds to fit everything into a grid that scores terrain size multiplied by crowns.",
+    sleeves: "No cards — domino tiles",
+    image: "",
+  },
+  {
+    name: "Catan Card Game",
+    category: "Strategy",
+    tagline: "The two player duel version of Catan, played entirely in cards.",
+    year: "1996",
+    publisher: "Kosmos",
+    designer: "Klaus Teuber",
+    artist: "",
+    theme: "Trading, Settlement",
+    mechanics: "Hand Management, Resource Management, Dice Rolling",
+    players: "2",
+    time: "45 min",
+    age: "",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Each player builds a principality of roads, settlements and cities laid out in front of them. Dice still drive production, but knights, fleets and event cards give you far more direct ways to interfere with the person opposite.",
+    sleeves: "120 × 70×70mm (Square)",
+    image: "",
+  },
+  {
+    name: "Delivery Witches",
+    category: "Family",
+    tagline: "",
+    year: "2024",
+    publisher: "",
+    designer: "",
+    artist: "",
+    theme: "",
+    mechanics: "",
+    players: "1–4",
+    time: "60 min",
+    age: "8+",
+    rating: "",
+    difficulty: "",
+    coop: false,
+    blurb: "",
+    sleeves: "Card size not yet listed (2024 release)",
+    image: "",
+  },
+  {
+    name: "Legend of the Five Rings: The Card Game",
+    category: "Card Game",
+    tagline: "Seven clans of Rokugan fight for honour, land and the Emperor's favour.",
+    year: "2017",
+    publisher: "Fantasy Flight Games",
+    designer: "",
+    artist: "",
+    theme: "Fantasy, Samurai",
+    mechanics: "Deck Construction, Bidding, Card Play",
+    players: "2",
+    time: "",
+    age: "",
+    rating: "",
+    difficulty: "Hard",
+    coop: false,
+    blurb: "A living card game set in Rokugan. Every turn opens with a bid that trades away honour for extra cards, and conflicts are then fought on two fronts, military and political, over provinces you have to hold or lose for good.",
+    sleeves: "20 × 41×63mm (Mini) + 247 × 63.5×88mm (Standard) — core set",
+    image: "",
+  },
+  {
+    name: "Starfluxx",
+    category: "Card Game",
+    tagline: "The rules and the goal keep changing, somewhere out in deep space.",
+    year: "2011",
+    publisher: "Looney Labs",
+    designer: "Andrew Looney",
+    artist: "",
+    theme: "Science Fiction",
+    mechanics: "Hand Management, Variable Rules, Take That",
+    players: "2–6",
+    time: "10–40 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Fluxx with a science fiction skin. It starts at draw one, play one and mutates from there as players add new rules, goals and creepers, so the winning condition can change entirely in the time it takes to go once round the table.",
+    sleeves: "100 × 56×87mm (Standard American)",
+    image: "",
+  },
+  {
+    name: "Gloom",
+    category: "Card Game",
+    tagline: "Make your own family miserable, then kill them off while they are at their lowest.",
+    year: "2005",
+    publisher: "Atlas Games",
+    designer: "Keith Baker",
+    artist: "",
+    theme: "Gothic, Humour",
+    mechanics: "Storytelling, Hand Management, Take That",
+    players: "2–4",
+    time: "60 min",
+    age: "13+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "You inflict misery on your own gothic household and happiness on everyone else's, then see your relatives off at their unhappiest. Played on transparent cards that stack so earlier modifiers still show through, and it rewards telling the story out loud.",
+    sleeves: "110 × 63.5×88mm (Standard)",
+    image: "",
+  },
+  {
+    name: "Happy Little Dinosaurs",
+    category: "Card Game",
+    tagline: "Dodge meteors, drama and natural disasters with a cheerful cartoon dinosaur.",
+    year: "2020",
+    publisher: "Unstable Games",
+    designer: "Ramy Badie",
+    artist: "",
+    theme: "Humour, Prehistoric",
+    mechanics: "Hand Management, Take That, Point to Point Movement",
+    players: "2–4",
+    time: "30–60 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "You play a dinosaur trying to survive the apocalypse. Disaster cards get countered from your hand, and your climb up the score track keeps getting interrupted by whichever player has just handed you a fresh catastrophe.",
+    sleeves: "97 × 63.5×88mm (Standard) — base game (69 standard + 28 disaster)",
+    image: "",
+  },
+  {
+    name: "Critter Kitchen",
+    category: "Family",
+    tagline: "Run a restaurant kitchen staffed entirely by animals.",
+    year: "2023",
+    publisher: "Lucky Duck Games",
+    designer: "",
+    artist: "",
+    theme: "Cooking, Animals",
+    mechanics: "Worker Placement, Engine Building",
+    players: "1–4",
+    time: "60 min",
+    age: "",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Place your critters to prep ingredients, take orders and cook dishes, building up a kitchen that can handle the more demanding customers later in the game. Service ends whether or not you are ready for it.",
+    sleeves: "171 × 63.5×88mm (Standard) — base game",
+    image: "",
+  },
+  {
+    name: "Wingspan Pocket",
+    category: "Strategy",
+    tagline: "The full Wingspan engine, shrunk down to fit in a coat pocket.",
+    year: "2024",
+    publisher: "Stonemaier Games / Automa Factory",
+    designer: "Elizabeth Hargrave",
+    artist: "Natalia Rojas, Ana María Martínez, Beth Sobel",
+    theme: "Birds, Nature",
+    mechanics: "Engine Building, Card Drafting, Dice Rolling",
+    players: "1–5",
+    time: "25–35 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Birds go into forest, grassland or wetland habitats, and each one powers the action of the row it sits in. Get the chain right and a single action cascades down the row, which is where the whole game lives.",
+    sleeves: "124 × 57×87mm (Standard) + 9 × 44×67mm (Mini) + 5 × 80×120mm (Jumbo)",
+    image: "",
+  },
+  {
+    name: "Flip 7",
+    category: "Card Game",
+    tagline: "Flip cards until you either hit seven different numbers or bust.",
+    year: "2024",
+    publisher: "The Op",
+    designer: "",
+    artist: "",
+    theme: "Numbers",
+    mechanics: "Push Your Luck, Set Collection",
+    players: "3+",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Flip one card at a time and stop before a duplicate wipes your hand. Seven different numbers in a round scores a fat bonus, which makes every extra flip both the obvious move and the one most likely to end your turn.",
+    sleeves: "94 × 56×87mm (Standard American)",
+    image: "",
+  },
+  {
+    name: "Tokaido",
+    category: "Family",
+    tagline: "Travel the old road from Kyoto to Edo, and take your time doing it.",
+    year: "2012",
+    publisher: "Funforge",
+    designer: "Antoine Bauza",
+    artist: "Naïade",
+    theme: "Travel, Japan",
+    mechanics: "Set Collection, Variable Player Powers, Track Movement",
+    players: "2–5",
+    time: "45 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Whoever is furthest behind on the road always moves next. Rushing ahead means skipping the hot springs, meals, temples and encounters that actually score, so the slowest, most indulgent traveller usually wins.",
+    sleeves: "165 × 44×68mm (Mini European)",
+    image: "",
+  },
+  {
+    name: "Ticket to Ride: Europe",
+    category: "Strategy",
+    tagline: "Claim rail routes across Europe with tunnels, ferries and stations in the way.",
+    year: "2005",
+    publisher: "Days of Wonder",
+    designer: "Alan R. Moon",
+    artist: "Julien Delval",
+    theme: "Trains, Travel",
+    mechanics: "Set Collection, Route Building, Hand Management",
+    players: "2–5",
+    time: "45–60 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Collect coloured train cards and spend matching sets to claim routes. The European map adds tunnels that can demand more cards than you budgeted for, ferries that need locomotives, and stations that let you borrow a route someone else has already taken.",
+    sleeves: "158 × 56×87mm (Standard American)",
+    image: "",
+  },
+  {
+    name: "Flamecraft",
+    category: "Strategy",
+    tagline: "Place artisan dragons in shops and enchant the town as you go.",
+    year: "2022",
+    publisher: "Cardboard Alchemy / Lucky Duck Games",
+    designer: "Manny Vega",
+    artist: "Sandara Tang",
+    theme: "Fantasy, Dragons",
+    mechanics: "Worker Placement, Set Collection, Hand Management",
+    players: "1–5",
+    time: "60 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Send your dragon into a shop either to gather goods or to enchant it. Enchantments improve that shop permanently, for you and for everyone who visits afterwards, so the town gets better the longer the game runs.",
+    sleeves: "121 × 44×67mm (Mini American) + 42 × ~89×140mm (Jumbo/XXL) — retail edition",
+    image: "",
+  },
+  {
+    name: "Takenoko",
+    category: "Family",
+    tagline: "Grow a bamboo garden while a hungry panda eats his way through it.",
+    year: "2011",
+    publisher: "Bombyx / Matagot",
+    designer: "Antoine Bauza",
+    artist: "Nicolas Fructus",
+    theme: "Animals, Gardening",
+    mechanics: "Tile Placement, Set Collection, Dice Rolling",
+    players: "2–4",
+    time: "45 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "The imperial gardener and the panda share one garden and want opposite things from it. Each turn you pick two actions from laying plots, irrigating, moving the gardener or letting the panda eat, and your objectives reward whatever the others are ignoring.",
+    sleeves: "46 × 44×68mm (Mini European)",
+    image: "",
+  },
+  {
+    name: "Azul",
+    category: "Strategy",
+    tagline: "Draft ceramic tiles for the palace wall and leave your opponents the scraps.",
+    year: "2017",
+    publisher: "Plan B Games",
+    designer: "Michael Kiesling",
+    artist: "Chris Quilliams",
+    theme: "Abstract, Renaissance",
+    mechanics: "Tile Drafting, Pattern Building, Set Collection",
+    players: "2–4",
+    time: "30–45 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Take every tile of one colour from a factory display and push the remainder into the centre for whoever goes next. Tiles you cannot place drop to the floor line and cost you points, so what you hand over matters as much as what you keep.",
+    sleeves: "No cards — tiles only",
+    image: "",
+  },
+  {
+    name: "Elder Sign",
+    category: "Deduction/Horror",
+    tagline: "Roll your way through a haunted museum before the ancient one wakes.",
+    year: "2011",
+    publisher: "Fantasy Flight Games",
+    designer: "Richard Launius, Kevin Wilson",
+    artist: "",
+    theme: "Horror, Lovecraft",
+    mechanics: "Dice Rolling, Cooperative, Push Your Luck",
+    players: "1–8",
+    time: "60–90 min",
+    age: "13+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: true,
+    blurb: "Investigators roll custom dice to match the symbols each adventure demands, locking in results as they go and re-rolling what is left. The museum clock keeps ticking the ancient one closer to waking whether or not anyone is ready.",
+    sleeves: "76 × 41×63mm (Mini American) + 80 × 70×120mm (Tarot)",
+    image: "",
+  },
+  {
+    name: "Trails",
+    category: "Family",
+    tagline: "A short hike through a national park, collecting birds, views and badges.",
+    year: "2021",
+    publisher: "Keymaster Games",
+    designer: "Henry Audubon",
+    artist: "",
+    theme: "Nature, Hiking",
+    mechanics: "Set Collection, Point to Point Movement",
+    players: "2–4",
+    time: "20–40 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Two hikers move around a loop trail, and the spaces you leave behind decide what the next player can reach. Where you stop is as much of a decision as what you pick up while you are there.",
+    sleeves: "74 × 50×75mm (Small Square)",
+    image: "",
+  },
+  {
+    name: "Love Letter",
+    category: "Card Game",
+    tagline: "Sixteen cards, one in hand, and a court full of people worth suspecting.",
+    year: "2012",
+    publisher: "Z-Man Games",
+    designer: "Seiji Kanai",
+    artist: "",
+    theme: "Renaissance, Romance",
+    mechanics: "Deduction, Hand Management, Player Elimination",
+    players: "2–4",
+    time: "20 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "You hold a single card and draw a second one on your turn, playing one of the two for its effect. Every effect narrows down what the others are holding, until either the deck runs out or only one suitor is left standing.",
+    sleeves: "27 × 61×88mm (fits Standard 63.5×88mm)",
+    image: "",
+  },
+  {
+    name: "Doctor Who Fluxx",
+    category: "Card Game",
+    tagline: "The rules keep changing, and so does the Doctor.",
+    year: "2017",
+    publisher: "Looney Labs",
+    designer: "Andrew Looney",
+    artist: "",
+    theme: "Science Fiction, Television",
+    mechanics: "Hand Management, Variable Rules",
+    players: "2–6",
+    time: "5–30 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Fluxx dressed in Doctor Who, with the Doctors, their companions and a good pile of familiar enemies. Rules and goals shift constantly, and the Doctor cards can regenerate into one another partway through a game.",
+    sleeves: "100 × 56×87mm (Standard American)",
+    image: "",
+  },
+  {
+    name: "Sushi Go!",
+    category: "Kids",
+    tagline: "Pick one card, pass the rest, and hope the pudding turns up.",
+    year: "2013",
+    publisher: "Gamewright",
+    designer: "Phil Walker-Harding",
+    artist: "",
+    theme: "Food",
+    mechanics: "Card Drafting, Set Collection",
+    players: "2–5",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Everyone takes a hand, keeps one card and passes the rest on, over and over until the cards run out. Maki rolls, tempura and dumplings all score differently, and the pudding count runs across all three rounds rather than resetting.",
+    sleeves: "",
+    image: "",
+  },
+  
+  {
+    name: "Point Salad",
+    category: "Kids",
+    tagline: "Every card is either a vegetable or a rule about vegetables.",
+    year: "2019",
+    publisher: "AEG",
+    designer: "Molly Johnson, Robert Melvin, Shawn Stankewich",
+    artist: "",
+    theme: "Food",
+    mechanics: "Card Drafting, Set Collection",
+    players: "2–6",
+    time: "15–30 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Cards are double sided: one face is a vegetable, the other a scoring condition. Each turn you take either two vegetables or one scoring card, and your salad is worth whatever the rules you picked up say it is.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Castle Combo",
+    category: "Kids",
+    tagline: "A three by three village where every card feeds the ones beside it.",
+    year: "2024",
+    publisher: "Catch Up Games",
+    designer: "Grégory Grard, Mathieu Roussel",
+    artist: "",
+    theme: "Medieval",
+    mechanics: "Card Drafting, Tableau Building, Set Collection",
+    players: "2–5",
+    time: "25 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "You buy characters from two markets and slot them into a three by three grid. Most of them score off their neighbours, so where a card goes matters more than the card itself, and money and keys are always tighter than you want.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Trio",
+    category: "Kids",
+    tagline: "Hunt for three of a kind in hands nobody will show you.",
+    year: "2023",
+    publisher: "Gamewright",
+    designer: "Kaya Miyano",
+    artist: "",
+    theme: "Numbers",
+    mechanics: "Deduction, Memory, Set Collection",
+    players: "3–6",
+    time: "15 min",
+    age: "7+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "The numbers are split between hidden hands and cards on the table. You ask a player to reveal their highest or lowest card, and turning up three matching numbers in a row claims the trio.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Spots",
+    category: "Kids",
+    tagline: "Roll dice onto your dogs and stop before one runs off.",
+    year: "2024",
+    publisher: "CMYK",
+    designer: "",
+    artist: "",
+    theme: "Animals",
+    mechanics: "Push Your Luck, Dice Rolling, Set Collection",
+    players: "2–4",
+    time: "30 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Dice are spots, and you keep adding them to the dogs in front of you. Two matching spots on one dog and it runs off, so the decision is always whether to place one more or bank the dog while it is still yours.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Ghost Blitz",
+    category: "Kids",
+    tagline: "Grab the right wooden object faster than everyone else.",
+    year: "2010",
+    publisher: "Zoch / Big Potato Games",
+    designer: "Jacques Zeimet",
+    artist: "",
+    theme: "Ghosts",
+    mechanics: "Speed Matching, Pattern Recognition",
+    players: "2–8",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Five objects sit in the middle of the table. Each card shows two of them, usually in the wrong colours, and you have to work out which object is correctly coloured or which is missing entirely, then get your hand there first.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Taco Kitten Pizza",
+    category: "Kids",
+    tagline: "Slap the pile when the card matches the word you just said.",
+    year: "",
+    publisher: "Big Potato Games",
+    designer: "",
+    artist: "",
+    theme: "Food, Animals",
+    mechanics: "Speed Matching, Hand Management",
+    players: "2–8",
+    time: "10 min",
+    age: "",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Everyone chants the same short list of words while playing cards face up one at a time. When the card matches the word being said, hands go for the pile, and the slowest player takes the lot.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Sleeping Queens",
+    category: "Kids",
+    tagline: "Wake the queens, dodge the dragons, do some arithmetic on the way.",
+    year: "2005",
+    publisher: "Gamewright",
+    designer: "Miranda Evarts",
+    artist: "",
+    theme: "Fairy Tale",
+    mechanics: "Hand Management, Take That, Set Collection",
+    players: "2–5",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Kings wake sleeping queens, knights steal them and dragons defend against the theft. Discarding to draw fresh cards means adding numbers together, which is the maths lesson quietly hiding inside it.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Sleeping Queens 2: The Rescue!",
+    category: "Kids",
+    tagline: "A second set of queens, with new trouble getting in the way.",
+    year: "",
+    publisher: "Gamewright",
+    designer: "Miranda Evarts",
+    artist: "",
+    theme: "Fairy Tale",
+    mechanics: "Hand Management, Take That, Set Collection",
+    players: "2–5",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "A follow up with a new set of queens and new cards that interfere with the usual king and knight routine.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Soundiculous!",
+    category: "Kids",
+    tagline: "Make the noise on the card and hope somebody guesses it.",
+    year: "",
+    publisher: "Big Potato Games",
+    designer: "",
+    artist: "",
+    theme: "Humour",
+    mechanics: "Acting, Team Play, Real Time",
+    players: "",
+    time: "",
+    age: "",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "One player makes the sound, everyone else shouts guesses. The cards get harder the further up the track you climb, and there is no dignity available at any point.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Articulate! for Kids",
+    category: "Kids",
+    tagline: "Describe the word without saying the word, fast.",
+    year: "",
+    publisher: "Drumond Park",
+    designer: "",
+    artist: "",
+    theme: "Words",
+    mechanics: "Team Play, Real Time, Communication Limits",
+    players: "4–20",
+    time: "",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Teams race around a board describing as many words as they can before the timer runs out, with categories pitched at younger players. This is the Mini Games travel edition.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Guess Who?",
+    category: "Kids",
+    tagline: "Yes or no questions until one face is left standing.",
+    year: "1979",
+    publisher: "Hasbro",
+    designer: "Theo Coster, Ora Coster",
+    artist: "",
+    theme: "Faces",
+    mechanics: "Deduction",
+    players: "2",
+    time: "20 min",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Each player picks a character and then narrows down the other one by asking about hats, glasses and hair, flipping faces down as they are ruled out.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Uno: Lilo & Stitch",
+    category: "Kids",
+    tagline: "Uno with a themed deck and one extra rule card.",
+    year: "",
+    publisher: "Mattel",
+    designer: "",
+    artist: "",
+    theme: "Licensed",
+    mechanics: "Hand Management, Matching",
+    players: "2–10",
+    time: "30 min",
+    age: "7+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Standard Uno, with themed art and a special rule card shuffled into the deck.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Outfoxed!",
+    category: "Kids",
+    tagline: "A cooperative whodunnit about a stolen pot pie.",
+    year: "2015",
+    publisher: "Gamewright",
+    designer: "Shanon Lyon",
+    artist: "",
+    theme: "Animals, Mystery",
+    mechanics: "Cooperative, Deduction, Dice Rolling",
+    players: "2–4",
+    time: "20 min",
+    age: "5+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "Players move around the board gathering clues and running them through a decoder to rule suspects in or out, working together to name the guilty fox before it gets away.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Cauldron Quest",
+    category: "Kids",
+    tagline: "Brew the antidote before the wizard blocks every path.",
+    year: "",
+    publisher: "Peaceable Kingdom",
+    designer: "",
+    artist: "",
+    theme: "Fantasy",
+    mechanics: "Cooperative, Dice Rolling",
+    players: "2–4",
+    time: "",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "A cooperative game where everyone rolls to move ingredients towards the cauldron while the wizard's barriers close routes off. The whole table wins or loses together.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Zombie Teenz Evolution",
+    category: "Kids",
+    tagline: "A cooperative campaign about teenagers and a zombie outbreak.",
+    year: "2021",
+    publisher: "Le Scorpion Masqué",
+    designer: "Annick Lobet",
+    artist: "",
+    theme: "Zombies",
+    mechanics: "Cooperative, Legacy, Dice Rolling",
+    players: "2–4",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "Players move around town collecting objects while the zombies spread. Winning opens envelopes that add new rules and characters, so the game keeps changing across a campaign.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Snug as a Bug in a Rug!",
+    category: "Kids",
+    tagline: "Get the bugs under the rug before the stink bugs arrive.",
+    year: "",
+    publisher: "Peaceable Kingdom",
+    designer: "",
+    artist: "",
+    theme: "Bugs",
+    mechanics: "Cooperative, Matching",
+    players: "2–4",
+    time: "15 min",
+    age: "3+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "A cooperative matching game for very young players. Spin, match a bug by colour, shape or number and tuck it under the rug, and try to finish before three stink bugs turn up.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Dragomino",
+    category: "Kids",
+    tagline: "Kingdomino for younger players, with eggs to hatch.",
+    year: "2020",
+    publisher: "Blue Orange Games",
+    designer: "Bruno Cathala, Marie Fort, Wilfried Fort",
+    artist: "",
+    theme: "Dragons",
+    mechanics: "Tile Drafting, Tile Placement",
+    players: "2–4",
+    time: "15 min",
+    age: "5+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Draft a domino, lay it next to matching terrain, and take an egg for every match you made. Some eggs hatch into baby dragons and some are empty, which is the whole tension of the game.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Sum Swamp",
+    category: "Kids",
+    tagline: "Addition and subtraction dressed up as a swamp race.",
+    year: "",
+    publisher: "Learning Resources",
+    designer: "",
+    artist: "",
+    theme: "Numbers",
+    mechanics: "Dice Rolling, Roll and Move",
+    players: "2–4",
+    time: "",
+    age: "5+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Roll two number dice and an operation die, work out the answer and move that many spaces. The endless loop in the middle of the board is where games go to die.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Monkey Around",
+    category: "Kids",
+    tagline: "Movement prompts for toddlers, one card at a time.",
+    year: "",
+    publisher: "Peaceable Kingdom",
+    designer: "",
+    artist: "",
+    theme: "Animals",
+    mechanics: "Physical Activity",
+    players: "",
+    time: "",
+    age: "2+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Cards ask a toddler to hop, wiggle or balance alongside a plush banana. Aimed at moving about rather than at winning.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Alphabet Bingo!",
+    category: "Kids",
+    tagline: "Bingo with letters in place of numbers.",
+    year: "",
+    publisher: "Peaceable Kingdom",
+    designer: "",
+    artist: "",
+    theme: "Letters",
+    mechanics: "Matching, Pattern Recognition",
+    players: "",
+    time: "",
+    age: "4+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Letters are called and matched on your board, built to get early readers recognising letter shapes and the sounds that go with them.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Shelby's Snack Shack Game",
+    category: "Kids",
+    tagline: "A counting game about a pug and a pile of bones.",
+    year: "",
+    publisher: "Educational Insights",
+    designer: "",
+    artist: "",
+    theme: "Animals",
+    mechanics: "Counting, Dexterity",
+    players: "2–4",
+    time: "",
+    age: "4+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Spin, then collect that many bones into Shelby's bowl. The grabbing is half the point, since it works fine motor control alongside the counting.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Charades for Kids",
+    category: "Kids",
+    tagline: "Fifty picture cards to act out, no reading required.",
+    year: "",
+    publisher: "Petit Collage",
+    designer: "",
+    artist: "",
+    theme: "Acting",
+    mechanics: "Acting, Team Play",
+    players: "",
+    time: "",
+    age: "3+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Picture flash cards rather than written words, so players who cannot read yet can still take a turn on their own.",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Guess in 10: Animal Kingdom",
+    category: "Kids",
+    tagline: "Ten yes or no questions to name the animal.",
+    year: "",
+    publisher: "Skillmatics",
+    designer: "",
+    artist: "",
+    theme: "Animals",
+    mechanics: "Deduction",
+    players: "",
+    time: "",
+    age: "",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Cascadia Junior",
+    category: "Kids",
+    tagline: "A lighter Cascadia for younger players.",
+    year: "",
+    publisher: "AEG / Flatout Games",
+    designer: "",
+    artist: "",
+    theme: "Nature",
+    mechanics: "Tile Placement, Set Collection",
+    players: "",
+    time: "",
+    age: "",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "Snail Sprint!",
+    category: "Kids",
+    tagline: "",
+    year: "",
+    publisher: "HABA",
+    designer: "",
+    artist: "",
+    theme: "Animals",
+    mechanics: "Racing, Dice Rolling",
+    players: "",
+    time: "",
+    age: "5+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "",
+    sleeves: "",
+    image: "",
+  },
+  {
+    name: "1, 2, 3",
+    category: "Kids",
+    tagline: "",
+    year: "",
+    publisher: "Devir",
+    designer: "",
+    artist: "",
+    theme: "",
+    mechanics: "",
+    players: "2–8",
+    time: "15 min",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "",
+    sleeves: "",
+    image: "",
+  },
+];
+
+/* One block per type in the table, in this order, with each block sorted by
+   title. Add a game anywhere in the list above and it sorts itself. */
+const CATEGORY_ORDER = ["Strategy", "Family", "Card Game", "Party", "Kids", "Deduction/Horror"];
+games.sort((a, b) =>
+  CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category) ||
+  a.name.localeCompare(b.name, 'en', { numeric: true, sensitivity: 'base' })
+);
+
+/* ---------- shared helpers ---------- */
+
+const SMALL_WORDS = ['the', 'of', 'a', 'an', 'and', 'to', 'for'];
+const IMAGE_FOLDER = 'images';
+const EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+const BANDS = {
+  "Good":     ["var(--good)", "var(--good-ink)"],
+  "Great":    ["var(--great)", "var(--great-ink)"],
+  "Awesome":  ["var(--awesome)", "var(--awesome-ink)"],
+  "Easy":     ["var(--easy)", "var(--easy-ink)"],
+  "Moderate": ["var(--moderate)", "var(--moderate-ink)"],
+  "Hard":     ["var(--hard)", "var(--hard-ink)"]
+};
+
+function slug(name){
+  return name.toLowerCase()
+    .replace(/['''’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function initials(name){
+  const words = name.replace(/[^A-Za-z0-9 ]/g, ' ').split(/\s+/)
+    .filter(w => w && !SMALL_WORDS.includes(w.toLowerCase()));
+  return words.slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+}
+
+/* "2–4" and "3+" both need reading, so pull the numbers out and work from those. */
+function playerRange(players){
+  const nums = (players || '').match(/\d+/g);
+  if(!nums) return null;
+  const min = +nums[0];
+  const max = nums[1] ? +nums[1] : (/\+/.test(players) ? Infinity : min);
+  return { min, max };
+}
+
+function band(value){
+  if(!value) return '<span class="band none">not set</span>';
+  const [bg, ink] = BANDS[value] || ["rgba(36,26,18,0.06)", "var(--ink-soft)"];
+  return `<span class="band" style="--band-bg:${bg}; --band-ink:${ink}">${value}</span>`;
+}
+
+function fact(label, value){
+  return value ? `<div><b>${label}</b> ${value}</div>` : '';
+}
+
+function loadCover(img, g){
+  const sources = g.image
+    ? [g.image]
+    : EXTENSIONS.map(ext => `${IMAGE_FOLDER}/${slug(g.name)}.${ext}`);
+
+  let i = 0;
+  img.addEventListener('error', () => {
+    i++;
+    if(i < sources.length){ img.src = sources[i]; }
+    else { img.remove(); }   // placeholder underneath takes over
+  });
+  img.alt = `${g.name} box art`;
+  img.src = sources[0];
+}
+
+/* ---------- state ---------- */
+
+const search = document.getElementById('search');
+const chips = document.querySelectorAll('.chip');
+const countLine = document.getElementById('countLine');
+const rows = document.getElementById('rows');
+const grid = document.getElementById('grid');
+const emptyTable = document.getElementById('emptyTable');
+const emptyCards = document.getElementById('emptyCards');
+const switchBtn = document.getElementById('switchView');
+const collectionView = document.getElementById('collectionView');
+const cardsView = document.getElementById('cardsView');
+
+let activeFilter = 'all';
+
+/* ---------- the collection table ---------- */
+
+function renderTable(list){
+  rows.innerHTML = '';
+  emptyTable.style.display = list.length ? 'none' : 'block';
+
+  let lastCategory = null;
+  list.forEach(g => {
+    if(g.category !== lastCategory){
+      lastCategory = g.category;
+      const head = document.createElement('tr');
+      head.className = 'group';
+      head.innerHTML = `<td colspan="8"><span style="--tag-color:${colors[g.category] || '#555'}"></span>${g.category}</td>`;
+      rows.appendChild(head);
+    }
+
+    const range = playerRange(g.players);
+    const solo = range && range.min === 1;
+    const two = range && range.min <= 2 && range.max >= 2;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="row-title"><a href="#game-${slug(g.name)}">${g.name}</a></td>
+      <td>${g.category}</td>
+      <td>${band(g.rating)}</td>
+      <td>${band(g.difficulty)}</td>
+      <td class="num">${g.players || ''}</td>
+      <td class="num">${g.time || ''}</td>
+      <td class="num">${g.coop ? '<span class="flag">Coop</span>' : ''}</td>
+      <td class="num">${solo ? '<span class="flag">Solo</span>' : (two ? '<span class="flag">2 Player</span>' : '')}</td>
+    `;
+    // The whole row is a target, not just the title text.
+    tr.addEventListener('click', e => {
+      if(e.target.tagName !== 'A') tr.querySelector('a').click();
+    });
+    rows.appendChild(tr);
+  });
+}
+
+/* ---------- the cards ---------- */
+
+function renderCards(list){
+  grid.innerHTML = '';
+  emptyCards.style.display = list.length ? 'none' : 'block';
+
+  list.forEach(g => {
+    const card = document.createElement('article');
+    card.className = 'game';
+    card.id = 'game-' + slug(g.name);
+    card.style.setProperty('--tag-color', colors[g.category] || '#555');
+
+    const glance = [];
+    if(g.players) glance.push(`<span>👥 ${g.players}</span>`);
+    if(g.time) glance.push(`<span>⏱ ${g.time}</span>`);
+    if(g.age) glance.push(`<span>🔞 ${g.age}</span>`);
+
+    const facts =
+      fact('Published', g.year) +
+      fact('Publisher', g.publisher) +
+      fact('Designer', g.designer) +
+      fact('Artist', g.artist) +
+      fact('Theme', g.theme) +
+      fact('Mechanics', g.mechanics);
+
+    const scores = (g.rating || g.difficulty) ? `
+      <div class="scores">${g.rating || '–'} <i>|</i> ${g.difficulty || '–'}</div>
+      <div class="score-labels"><span>rating</span><span>difficulty</span></div>` : '';
+
+    card.innerHTML = `
+      <div class="banner">
+        <div class="banner-fallback"><span>${initials(g.name)}</span></div>
+        <img class="banner-img" alt="" loading="lazy">
+      </div>
+      <div class="head">
+        <h2 class="game-title">${g.name}</h2>
+        ${glance.length ? `<div class="at-a-glance">${glance.join('')}</div>` : ''}
+      </div>
+      ${g.tagline ? `<p class="tagline">${g.tagline}</p>` : '<div style="height:12px"></div>'}
+      <div class="body">
+        <div class="facts">${facts}</div>
+        <div class="blurb">${g.blurb ? `<p>${g.blurb}</p>` : ''}</div>
+        <div class="rail">
+          <div>
+            <div class="label">type</div>
+            <div class="type-tag">${g.category}</div>
+          </div>
+          ${scores}
+        </div>
+      </div>
+      ${g.sleeves ? `<div class="sleeves">🛡 ${g.sleeves}</div>` : ''}
+    `;
+    loadCover(card.querySelector('.banner-img'), g);
+    grid.appendChild(card);
+  });
+}
+
+/* ---------- rendering and routing ---------- */
+
+function render(){
+  const q = search.value.trim().toLowerCase();
+  const list = games.filter(g => {
+    const matchesFilter = activeFilter === 'all' || g.category === activeFilter;
+    return matchesFilter && g.name.toLowerCase().includes(q);
+  });
+
+  countLine.textContent = `Showing ${list.length} of ${games.length} games`;
+  renderTable(list);
+  renderCards(list);
+}
+
+function showView(name){
+  const cards = name === 'cards';
+  collectionView.classList.toggle('active', !cards);
+  cardsView.classList.toggle('active', cards);
+  switchBtn.textContent = cards ? '← Back to the collection' : 'Browse the cards instead';
+}
+
+/* Empty hash is the table, #cards is the grid, #game-xxx opens one card. */
+function route(){
+  const hash = decodeURIComponent(location.hash.slice(1));
+
+  if(!hash){ showView('collection'); return; }
+  showView('cards');
+
+  if(hash === 'cards'){ window.scrollTo({ top:0 }); return; }
+
+  const card = document.getElementById(hash);
+  if(!card) return;
+  card.scrollIntoView({ block:'start', behavior:'smooth' });
+  card.classList.add('targeted');
+  setTimeout(() => card.classList.remove('targeted'), 2600);
+}
+
+search.addEventListener('input', render);
+chips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    chips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.filter;
+    render();
+  });
+});
+switchBtn.addEventListener('click', () => {
+  location.hash = cardsView.classList.contains('active') ? '' : 'cards';
+  if(!location.hash) route();   // clearing the hash fires no hashchange in every browser
+});
+window.addEventListener('hashchange', route);
+
+document.getElementById('allChip').textContent = `All (${games.length})`;
+document.getElementById('totalCount').textContent = games.length;
+
+render();
+route();
+</script>
+</body>
+</html>
