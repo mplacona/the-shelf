@@ -5,83 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Shelf — Board Game Collection</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#efe6d8;
-    --card:#fffbf4;
-    --ink:#241a12;
-    --ink-soft:rgba(36,26,18,0.60);
-    --ink-faint:rgba(36,26,18,0.42);
-    --rule:rgba(36,26,18,0.12);
-    --walnut-deep:#20140c;
-    --felt:#1e4638;
-    --felt-light:#2c5c4a;
-    --brass:#b98a44;
-    --brick:#8a3c2e;
+    --paper:#f3f5f8;
+    --card:#ffffff;
+    --ink:#171a21;
+    --ink-soft:#5c6472;
+    --ink-faint:#8b93a1;
+    --rule:#e6e9f0;
+    --walnut-deep:#1c2433;
+    --felt:#243044;
+    --felt-light:#3d4d66;
+    --brass:#3d5afe;
+    --brick:#3d5afe;
 
-    --good:#cfe0da;      --good-ink:#1e4638;
-    --great:#f0dcb4;     --great-ink:#7a5615;
-    --awesome:#f2cfc2;   --awesome-ink:#8a3c2e;
-    --easy:#cfe0da;      --easy-ink:#1e4638;
-    --moderate:#f0dcb4;  --moderate-ink:#7a5615;
-    --hard:#eabfb2;      --hard-ink:#8a3c2e;
+    --good:#d9f5e5;      --good-ink:#0f7a45;
+    --great:#ffe7c2;     --great-ink:#8a5608;
+    --awesome:#ffd5de;   --awesome-ink:#a1263c;
+    --easy:#d9f5e5;      --easy-ink:#0f7a45;
+    --moderate:#ffe7c2;  --moderate-ink:#8a5608;
+    --hard:#ffd5de;      --hard-ink:#a1263c;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper);
-    background-image:
-      radial-gradient(circle at 12% 0%, rgba(185,138,68,0.16), transparent 42%),
-      radial-gradient(circle at 88% 100%, rgba(30,70,56,0.12), transparent 48%);
-    background-attachment:fixed;
     color:var(--ink);
-    font-family:'Work Sans', sans-serif;
+    font-family:'Outfit', sans-serif;
     min-height:100vh;
   }
 
-  .wrap{ max-width:1220px; margin:0 auto; padding:56px 24px 80px; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:40px 24px 72px; }
 
-  header{ border-bottom:1px solid var(--rule); padding-bottom:28px; }
+  header{ padding-bottom:8px; }
   h1{
-    font-family:'Fraunces', serif; font-weight:300;
-    font-size:clamp(2rem, 6vw, 3.6rem);
-    letter-spacing:0.03em; text-transform:uppercase;
-    margin:0 0 10px; line-height:1;
+    font-weight:600; font-size:clamp(1.8rem, 4vw, 2.4rem);
+    letter-spacing:-0.03em;
+    margin:0 0 8px; line-height:1.1;
   }
-  .sub{ max-width:66ch; color:var(--ink-soft); font-size:15px; line-height:1.55; margin:0; }
+  .sub{ max-width:62ch; color:var(--ink-soft); font-size:15.5px; line-height:1.5; margin:0; }
 
-  .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:26px 0 6px; }
+  .toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:22px 0 4px; }
   #search{
-    flex:1 1 200px; max-width:280px;
+    flex:1 1 220px; max-width:320px;
     background:var(--card); border:1px solid var(--rule); color:var(--ink);
-    padding:10px 14px; border-radius:7px;
-    font-family:'Work Sans', sans-serif; font-size:15px;
-    outline:none; transition:border-color 0.15s ease;
+    padding:10px 14px; border-radius:12px;
+    font-family:inherit; font-size:15px;
+    outline:none; box-shadow:0 1px 2px rgba(23,26,33,0.04);
   }
   #search::placeholder{ color:var(--ink-faint); }
-  #search:focus{ border-color:var(--brass); }
+  #search:focus{ border-color:var(--brass); box-shadow:0 0 0 3px rgba(61,90,254,0.16); }
 
   .chip{
-    background:transparent; border:1px solid var(--rule); color:var(--ink-soft);
-    padding:9px 16px; border-radius:999px;
-    font-family:'Work Sans', sans-serif; font-size:14px;
-    cursor:pointer; transition:all 0.15s ease; white-space:nowrap;
+    background:var(--card); border:1px solid var(--rule); color:var(--ink-soft);
+    padding:8px 14px; border-radius:999px;
+    font-family:inherit; font-size:14px; font-weight:500;
+    cursor:pointer; white-space:nowrap;
+    box-shadow:0 1px 2px rgba(23,26,33,0.04);
   }
-  .chip:hover{ border-color:var(--brass); color:var(--ink); }
+  .chip:hover{ border-color:#c9d0dc; color:var(--ink); }
   .chip:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
-  .chip.active{ background:var(--brass); border-color:var(--brass); color:var(--walnut-deep); font-weight:600; }
+  .chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; font-weight:600; }
 
   .switch{
     margin-left:auto;
-    background:transparent; border:none; cursor:pointer;
-    font-family:'Work Sans', sans-serif; font-size:14px; color:var(--brick);
-    border-bottom:1px solid rgba(138,60,46,0.35); padding:0 0 2px;
+    background:var(--card); border:1px solid var(--rule); cursor:pointer;
+    font-family:inherit; font-size:14px; font-weight:500; color:var(--ink);
+    border-radius:12px; padding:8px 14px;
+    box-shadow:0 1px 2px rgba(23,26,33,0.04);
   }
-  .switch:hover{ border-bottom-color:var(--brick); }
-  .switch:focus-visible{ outline:2px solid var(--brass); outline-offset:3px; }
+  .switch:hover{ border-color:#c9d0dc; }
+  .switch:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
 
-  .count-line{ color:var(--ink-faint); font-size:13px; margin:14px 0 24px; }
+  .count-line{ color:var(--ink-faint); font-size:13px; margin:12px 0 16px; }
 
   .view{ display:none; }
   .view.active{ display:block; }
@@ -91,136 +88,145 @@
   .sheet{
     background:var(--card);
     border:1px solid var(--rule);
-    border-radius:5px;
-    padding:26px 26px 20px;
-    box-shadow:0 1px 2px rgba(36,26,18,0.05);
+    border-radius:18px;
+    padding:18px 18px 14px;
+    box-shadow:0 8px 28px rgba(23,26,33,0.05);
     overflow-x:auto;
   }
   table{ width:100%; border-collapse:collapse; min-width:760px; }
   thead th{
-    text-align:left; font-size:12.5px; font-weight:600;
-    padding:0 8px 10px; border-bottom:1px solid var(--rule); white-space:nowrap;
+    text-align:left; font-size:12px; font-weight:600; letter-spacing:0.04em;
+    text-transform:uppercase; color:var(--ink-faint);
+    padding:6px 10px 12px; border-bottom:1px solid var(--rule); white-space:nowrap;
   }
   thead th.c{ text-align:center; }
   tbody tr{ cursor:pointer; }
-  tbody tr:hover td{ background:rgba(185,138,68,0.10); }
-  tbody tr:focus-within td{ background:rgba(185,138,68,0.14); }
-  td{ padding:5px 8px; font-size:13px; color:var(--ink-soft); vertical-align:middle; }
-  td.row-title a{ color:var(--ink-soft); text-decoration:none; display:block; padding:2px 0; }
-  tbody tr:hover td.row-title a{ color:var(--ink); }
-  td.row-title a:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; border-radius:2px; }
-  td.num{ text-align:center; white-space:nowrap; }
+  tbody tr:hover td{ background:#f4f6fb; }
+  tbody tr:focus-within td{ background:#eef1f8; }
+  td{ padding:8px 10px; font-size:14px; color:var(--ink-soft); vertical-align:middle; }
+  td.row-title a{
+    color:var(--ink); text-decoration:none; font-weight:500;
+    display:flex; align-items:center; gap:12px; padding:2px 0;
+  }
+  .thumb{
+    position:relative; flex:none; width:36px; height:48px;
+    border-radius:8px; overflow:hidden; background:var(--walnut-deep);
+  }
+  .thumb-img{ position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:cover; }
+  .thumb-fallback{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, var(--tag-color, var(--felt-light)), var(--walnut-deep));
+    font-weight:700; font-size:12px;
+    letter-spacing:0.04em; color:#fff;
+  }
+  tbody tr:hover td.row-title a{ color:var(--brass); }
+  td.row-title a:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; border-radius:6px; }
+  td.num, td:has(.band), td:has(.flag){ text-align:center; white-space:nowrap; }
 
   .band{
-    display:block; text-align:center; padding:4px 8px; border-radius:2px;
-    font-size:12px; font-weight:500;
+    display:inline-block; text-align:center; padding:4px 10px; border-radius:999px;
+    font-size:12px; font-weight:600;
     color:var(--band-ink, var(--ink-soft)); background:var(--band-bg, transparent);
   }
-  .band.none{ color:var(--ink-faint); background:rgba(36,26,18,0.035); font-style:italic; }
+  .band.none{ color:var(--ink-faint); background:#f1f3f7; font-style:normal; font-weight:500; }
   .flag{
-    display:block; text-align:center; padding:4px 8px; border-radius:2px;
-    font-size:12px; background:rgba(36,26,18,0.06); color:var(--ink-soft);
+    display:inline-block; text-align:center; padding:4px 10px; border-radius:999px;
+    font-size:12px; font-weight:600; background:#eef1f6; color:var(--ink-soft);
   }
   .group td{
-    padding:26px 8px 6px;
-    font-family:'Fraunces', serif; font-size:15px; font-weight:600; color:var(--ink);
+    padding:22px 10px 6px;
+    font-size:13px; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--ink);
   }
-  .group:first-child td{ padding-top:14px; }
+  .group:first-child td{ padding-top:10px; }
   .group:hover td{ background:transparent; }
   .group td span{
-    display:inline-block; width:9px; height:9px; border-radius:2px;
+    display:inline-block; width:8px; height:8px; border-radius:99px;
     background:var(--tag-color); margin-right:8px;
   }
   .key{
-    margin-top:22px; padding-top:16px; border-top:1px solid var(--rule);
-    font-size:12px; color:var(--ink-faint); line-height:1.6;
+    margin:8px 10px 6px; padding-top:14px; border-top:1px solid var(--rule);
+    font-size:12.5px; color:var(--ink-faint); line-height:1.55;
   }
 
   /* ---------- Card view ---------- */
 
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(470px, 1fr)); gap:26px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(460px, 1fr)); gap:18px; }
 
   .game{
     scroll-margin-top:24px;
     background:var(--card);
     border:1px solid var(--rule);
-    border-radius:5px;
+    border-radius:18px;
     overflow:hidden;
     display:flex; flex-direction:column;
-    box-shadow:0 1px 2px rgba(36,26,18,0.05);
+    box-shadow:0 8px 28px rgba(23,26,33,0.05);
   }
-  .game.targeted{ border-color:var(--brass); box-shadow:0 0 0 3px rgba(185,138,68,0.35); }
+  .game.targeted{ border-color:var(--brass); box-shadow:0 0 0 3px rgba(61,90,254,0.22); }
   @media (prefers-reduced-motion: no-preference){
-    .game{ transition:box-shadow 0.4s ease, border-color 0.4s ease; }
+    .game{ transition:box-shadow 0.2s ease, border-color 0.2s ease; }
   }
 
-  .banner{ position:relative; height:180px; overflow:hidden; background:var(--walnut-deep); }
+  .banner{ position:relative; height:200px; overflow:hidden; background:var(--walnut-deep); }
   .banner-img{ position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:cover; }
   .banner-fallback{
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
-    background:
-      repeating-linear-gradient(135deg, rgba(0,0,0,0.10) 0 12px, transparent 12px 24px),
-      linear-gradient(155deg, var(--tag-color, var(--felt-light)), var(--walnut-deep));
+    background:linear-gradient(160deg, var(--tag-color, var(--felt-light)), var(--walnut-deep));
   }
   .banner-fallback span{
-    font-family:'Fraunces', serif; font-weight:700;
-    font-size:40px; letter-spacing:0.08em; color:rgba(255,251,244,0.85);
+    font-weight:700; font-size:36px; letter-spacing:0.04em; color:#fff;
   }
 
-  .head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:18px 24px 0; }
+  .head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:18px 22px 0; }
   .game-title{
-    font-family:'Fraunces', serif; font-weight:300;
-    font-size:29px; line-height:1.05; letter-spacing:0.01em;
-    margin:0; text-transform:uppercase;
+    font-weight:600; font-size:26px; line-height:1.1; letter-spacing:-0.03em;
+    margin:0;
   }
-  .at-a-glance{ display:flex; gap:14px; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; padding-bottom:4px; }
-  .at-a-glance span{ display:flex; align-items:center; gap:4px; }
+  .at-a-glance{ display:flex; gap:8px; font-size:13px; color:var(--ink-soft); white-space:nowrap; padding-bottom:2px; }
+  .at-a-glance span{
+    display:flex; align-items:center; gap:4px;
+    background:#f3f5f8; border-radius:999px; padding:4px 8px;
+  }
 
-  .tagline{ padding:8px 24px 16px; font-size:14px; line-height:1.45; color:var(--ink-soft); }
+  .tagline{ padding:8px 22px 16px; font-size:15px; line-height:1.45; color:var(--ink-soft); }
 
   .body{
-    display:grid; grid-template-columns:0.95fr 1.75fr 0.7fr; gap:22px;
-    padding:16px 24px 18px; border-top:1px solid var(--rule);
+    display:grid; grid-template-columns:0.9fr 1.6fr auto; gap:20px;
+    padding:16px 22px 18px; border-top:1px solid var(--rule);
   }
-  .facts{ font-size:12px; line-height:1.5; color:var(--ink-soft); }
-  .facts div{ margin-bottom:5px; }
+  .facts{ font-size:13px; line-height:1.55; color:var(--ink-soft); }
+  .facts div{ margin-bottom:4px; }
   .facts b{ color:var(--ink); font-weight:600; }
 
-  .blurb{ font-size:12.5px; line-height:1.5; color:var(--ink-soft); }
-  .blurb p{ margin:0; column-count:2; column-gap:16px; }
-  .blurb p::first-letter{
-    float:left;
-    font-family:'Fraunces', serif; font-weight:600; font-size:26px; line-height:1;
-    background:var(--tag-color, var(--felt)); color:var(--card);
-    padding:9px 11px; margin:2px 8px 0 0;
-  }
+  .blurb{ font-size:14px; line-height:1.55; color:var(--ink-soft); }
+  .blurb p{ margin:0; }
 
-  .rail{ display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; }
-  .rail > div{ width:100%; }
-  .rail .label{ font-size:11px; font-style:italic; color:var(--ink-faint); }
+  .rail{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; text-align:right; }
+  .rail > div{ width:auto; }
+  .rail .label{ font-size:11px; color:var(--ink-faint); letter-spacing:0.04em; text-transform:uppercase; }
   .type-tag{
-    width:100%; background:var(--tag-color, var(--felt)); color:#fffbf4;
-    font-size:11.5px; font-weight:600; letter-spacing:0.06em;
-    padding:9px 6px; border-radius:3px; text-transform:uppercase;
+    background:var(--tag-color, var(--felt)); color:#fff;
+    font-size:12px; font-weight:600; letter-spacing:0.04em;
+    padding:6px 10px; border-radius:999px; text-transform:uppercase;
   }
   .scores{
-    width:100%; display:flex; flex-wrap:wrap; justify-content:center; gap:4px 8px;
-    background:rgba(36,26,18,0.05); border-radius:3px;
-    padding:9px 6px; font-size:12.5px; font-weight:500; text-align:center;
+    display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px;
+    font-size:13px; font-weight:600; text-align:right;
   }
-  .scores i{ color:var(--ink-faint); font-style:normal; }
-  .score-labels{ display:flex; justify-content:space-between; width:100%; font-size:11px; font-style:italic; color:var(--ink-faint); padding:0 6px; }
+  .scores i{ color:var(--ink-faint); font-style:normal; font-weight:400; }
+  .score-labels{ display:flex; justify-content:flex-end; gap:18px; font-size:11px; color:var(--ink-faint); }
 
   .sleeves{
-    border-top:1px dashed var(--rule); background:rgba(36,26,18,0.03);
-    padding:11px 24px; font-size:12px; line-height:1.4; color:var(--ink-soft);
+    border-top:1px solid var(--rule); background:#f7f8fb;
+    padding:12px 22px; font-size:13px; line-height:1.4; color:var(--ink-soft);
     margin-top:auto;
   }
 
   .empty{ padding:50px 0; text-align:center; color:var(--ink-faint); font-size:15px; }
 
-  footer{ margin-top:44px; padding-top:22px; border-top:1px solid var(--rule); font-size:13px; color:var(--ink-faint); }
+  footer{ margin-top:36px; font-size:13px; color:var(--ink-faint); }
 
   @media (max-width: 900px){
     .grid{ grid-template-columns:1fr; }
@@ -243,7 +249,7 @@
 
   <header>
     <h1>Board Game Collection</h1>
-    <p class="sub">Everything on the shelf — from quick card games to weekend strategy games. Pick a row to open its card, where the box art, sleeve sizes and the rest of the detail live.</p>
+    <p class="sub">Everything on the shelf — from quick card games to weekend strategy games. Pick a row to open its card, where the sleeve sizes and the rest of the detail live.</p>
   </header>
 
   <div class="toolbar">
@@ -254,7 +260,7 @@
     <button class="chip" data-filter="Card Game">Card Game</button>
     <button class="chip" data-filter="Party">Party</button>
     <button class="chip" data-filter="Kids">Kids</button>
-    <button class="chip" data-filter="Deduction/Horror">Horror &amp; Mystery</button>
+    <button class="chip" data-filter="Horror & Mystery">Horror &amp; Mystery</button>
     <button class="switch" id="switchView"></button>
   </div>
 
@@ -310,7 +316,7 @@ const colors = {
   "Card Game": "#8a3c2e",
   "Party": "#6b4a8a",
   "Kids": "#2f6d8c",
-  "Deduction/Horror": "#3a3a3a"
+  "Horror & Mystery": "#3a3a3a"
 };
 
 /* Games are sorted into CATEGORY_ORDER below on load, so you can add a new
@@ -347,7 +353,7 @@ const games = [
     theme: "Medieval, City Building",
     mechanics: "Tile Placement, Area Majority",
     players: "2–5",
-    time: "35 min",
+    time: "30–45 min",
     age: "7+",
     rating: "",
     difficulty: "Easy",
@@ -367,7 +373,7 @@ const games = [
     theme: "Medieval, Territory",
     mechanics: "Tile Drafting, Tile Placement, Pattern Building",
     players: "2–4",
-    time: "20 min",
+    time: "15–25 min",
     age: "8+",
     rating: "",
     difficulty: "Easy",
@@ -383,12 +389,12 @@ const games = [
     year: "1996",
     publisher: "Kosmos",
     designer: "Klaus Teuber",
-    artist: "",
+    artist: "Tanja Donner, Pete Fenlon, Jason Hawkins",
     theme: "Trading, Settlement",
     mechanics: "Hand Management, Resource Management, Dice Rolling",
     players: "2",
-    time: "45 min",
-    age: "",
+    time: "60–120 min",
+    age: "10+",
     rating: "",
     difficulty: "Moderate",
     coop: false,
@@ -399,21 +405,21 @@ const games = [
   {
     name: "Delivery Witches",
     category: "Family",
-    tagline: "",
-    year: "2024",
-    publisher: "",
-    designer: "",
-    artist: "",
-    theme: "",
-    mechanics: "",
+    tagline: "Soar the skies, pick up deliveries and become the best delivery witch.",
+    year: "2025",
+    publisher: "Undigital",
+    designer: "Eric Rodriguez",
+    artist: "Mado Peña, Ernest Sala",
+    theme: "Fantasy",
+    mechanics: "Action Points, Pick-up and Deliver",
     players: "1–4",
-    time: "60 min",
-    age: "8+",
+    time: "45–60 min",
+    age: "9+",
     rating: "",
     difficulty: "",
     coop: false,
     blurb: "",
-    sleeves: "Card size not yet listed (2024 release)",
+    sleeves: "Card size not yet listed (2025 release)",
     image: "pictures/Delivery Witches.webp",
   },
   {
@@ -422,13 +428,13 @@ const games = [
     tagline: "Seven clans of Rokugan fight for honour, land and the Emperor's favour.",
     year: "2017",
     publisher: "Fantasy Flight Games",
-    designer: "",
-    artist: "",
+    designer: "Brad Andres, Erik Dahlman, Nate French, Tyler Parrott",
+    artist: "Brad Andres, Erik Dahlman, Nate French",
     theme: "Fantasy, Samurai",
     mechanics: "Deck Construction, Bidding, Card Play",
     players: "2",
-    time: "",
-    age: "",
+    time: "45–90 min",
+    age: "14+",
     rating: "",
     difficulty: "Hard",
     coop: false,
@@ -443,7 +449,7 @@ const games = [
     year: "2011",
     publisher: "Looney Labs",
     designer: "Andrew Looney",
-    artist: "",
+    artist: "Derek Ring",
     theme: "Science Fiction",
     mechanics: "Hand Management, Variable Rules, Take That",
     players: "2–6",
@@ -463,7 +469,7 @@ const games = [
     year: "2005",
     publisher: "Atlas Games",
     designer: "Keith Baker",
-    artist: "",
+    artist: "Michelle Nephew, J. Scott Reeves, Todd Remick",
     theme: "Gothic, Humour",
     mechanics: "Storytelling, Hand Management, Take That",
     players: "2–4",
@@ -480,10 +486,10 @@ const games = [
     name: "Happy Little Dinosaurs",
     category: "Card Game",
     tagline: "Dodge meteors, drama and natural disasters with a cheerful cartoon dinosaur.",
-    year: "2020",
+    year: "2021",
     publisher: "Unstable Games",
     designer: "Ramy Badie",
-    artist: "",
+    artist: "Ramy Badie",
     theme: "Humour, Prehistoric",
     mechanics: "Hand Management, Take That, Point to Point Movement",
     players: "2–4",
@@ -500,15 +506,15 @@ const games = [
     name: "Critter Kitchen",
     category: "Family",
     tagline: "Run a restaurant kitchen staffed entirely by animals.",
-    year: "2023",
+    year: "2025",
     publisher: "Lucky Duck Games",
-    designer: "",
-    artist: "",
+    designer: "Alex Cutler, Peter C. Hayward",
+    artist: "Sandara Tang",
     theme: "Cooking, Animals",
     mechanics: "Worker Placement, Engine Building",
-    players: "1–4",
+    players: "1–5",
     time: "60 min",
-    age: "",
+    age: "12+",
     rating: "",
     difficulty: "Moderate",
     coop: false,
@@ -520,7 +526,7 @@ const games = [
     name: "Wingspan Pocket",
     category: "Strategy",
     tagline: "The full Wingspan engine, shrunk down to fit in a coat pocket.",
-    year: "2024",
+    year: "2026",
     publisher: "Stonemaier Games / Automa Factory",
     designer: "Elizabeth Hargrave",
     artist: "Natalia Rojas, Ana María Martínez, Beth Sobel",
@@ -542,11 +548,11 @@ const games = [
     tagline: "Flip cards until you either hit seven different numbers or bust.",
     year: "2024",
     publisher: "The Op",
-    designer: "",
-    artist: "",
+    designer: "Eric Olsen",
+    artist: "O'Neil Mabile",
     theme: "Numbers",
     mechanics: "Push Your Luck, Set Collection",
-    players: "3+",
+    players: "3–18",
     time: "20 min",
     age: "8+",
     rating: "",
@@ -566,7 +572,7 @@ const games = [
     artist: "Naïade",
     theme: "Travel, Japan",
     mechanics: "Set Collection, Variable Player Powers, Track Movement",
-    players: "2–5",
+    players: "1–5",
     time: "45 min",
     age: "8+",
     rating: "",
@@ -587,7 +593,7 @@ const games = [
     theme: "Trains, Travel",
     mechanics: "Set Collection, Route Building, Hand Management",
     players: "2–5",
-    time: "45–60 min",
+    time: "30–60 min",
     age: "8+",
     rating: "",
     difficulty: "Easy",
@@ -643,7 +649,7 @@ const games = [
     year: "2017",
     publisher: "Plan B Games",
     designer: "Michael Kiesling",
-    artist: "Chris Quilliams",
+    artist: "Philippe Guérin, Chris Quilliams",
     theme: "Abstract, Renaissance",
     mechanics: "Tile Drafting, Pattern Building, Set Collection",
     players: "2–4",
@@ -658,16 +664,16 @@ const games = [
   },
   {
     name: "Elder Sign",
-    category: "Deduction/Horror",
+    category: "Horror & Mystery",
     tagline: "Roll your way through a haunted museum before the ancient one wakes.",
     year: "2011",
     publisher: "Fantasy Flight Games",
     designer: "Richard Launius, Kevin Wilson",
-    artist: "",
+    artist: "Dallas Mehlhoff",
     theme: "Horror, Lovecraft",
     mechanics: "Dice Rolling, Cooperative, Push Your Luck",
     players: "1–8",
-    time: "60–90 min",
+    time: "90 min",
     age: "13+",
     rating: "",
     difficulty: "Moderate",
@@ -683,7 +689,7 @@ const games = [
     year: "2021",
     publisher: "Keymaster Games",
     designer: "Henry Audubon",
-    artist: "",
+    artist: "Fifty-Nine Parks Print Series",
     theme: "Nature, Hiking",
     mechanics: "Set Collection, Point to Point Movement",
     players: "2–4",
@@ -703,7 +709,7 @@ const games = [
     year: "2012",
     publisher: "Z-Man Games",
     designer: "Seiji Kanai",
-    artist: "",
+    artist: "Kali Fitzgerald, Andrew Hepworth, Jeff Himmelman",
     theme: "Renaissance, Romance",
     mechanics: "Deduction, Hand Management, Player Elimination",
     players: "2–4",
@@ -743,11 +749,11 @@ const games = [
     year: "2013",
     publisher: "Gamewright",
     designer: "Phil Walker-Harding",
-    artist: "",
+    artist: "Nan Rangsima, Tobias Schweiger, Phil Walker-Harding",
     theme: "Food",
     mechanics: "Card Drafting, Set Collection",
     players: "2–5",
-    time: "20 min",
+    time: "15 min",
     age: "8+",
     rating: "",
     difficulty: "Easy",
@@ -764,12 +770,12 @@ const games = [
     year: "2019",
     publisher: "AEG",
     designer: "Molly Johnson, Robert Melvin, Shawn Stankewich",
-    artist: "",
+    artist: "Dylan Mangini",
     theme: "Food",
     mechanics: "Card Drafting, Set Collection",
     players: "2–6",
     time: "15–30 min",
-    age: "8+",
+    age: "10+",
     rating: "",
     difficulty: "Easy",
     coop: false,
@@ -784,11 +790,11 @@ const games = [
     year: "2024",
     publisher: "Catch Up Games",
     designer: "Grégory Grard, Mathieu Roussel",
-    artist: "",
+    artist: "Stéphane Escapa",
     theme: "Medieval",
     mechanics: "Card Drafting, Tableau Building, Set Collection",
     players: "2–5",
-    time: "25 min",
+    time: "10–25 min",
     age: "10+",
     rating: "",
     difficulty: "Moderate",
@@ -801,15 +807,15 @@ const games = [
     name: "Trio",
     category: "Card Game",
     tagline: "Hunt for three of a kind in hands nobody will show you.",
-    year: "2023",
+    year: "2021",
     publisher: "Gamewright",
     designer: "Kaya Miyano",
-    artist: "",
+    artist: "Laura Michaud, Sai Beppu",
     theme: "Numbers",
     mechanics: "Deduction, Memory, Set Collection",
     players: "3–6",
     time: "15 min",
-    age: "7+",
+    age: "6+",
     rating: "",
     difficulty: "Easy",
     coop: false,
@@ -821,15 +827,15 @@ const games = [
     name: "Spots",
     category: "Family",
     tagline: "Roll dice onto your dogs and stop before one runs off.",
-    year: "2024",
+    year: "2022",
     publisher: "CMYK",
-    designer: "",
-    artist: "",
+    designer: "Alex Hague, Jon Perry, Justin Vickers",
+    artist: "John Bond",
     theme: "Animals",
     mechanics: "Push Your Luck, Dice Rolling, Set Collection",
-    players: "2–4",
-    time: "30 min",
-    age: "8+",
+    players: "1–4",
+    time: "25–30 min",
+    age: "10+",
     rating: "",
     difficulty: "Easy",
     coop: false,
@@ -844,7 +850,7 @@ const games = [
     year: "2010",
     publisher: "Zoch / Big Potato Games",
     designer: "Jacques Zeimet",
-    artist: "",
+    artist: "Doris Matthäus, Gabriela Silveira",
     theme: "Ghosts",
     mechanics: "Speed Matching, Pattern Recognition",
     players: "2–8",
@@ -864,11 +870,11 @@ const games = [
     year: "2018",
     publisher: "Dolphin Hat Games / Big Potato",
     designer: "Dave Campbell, Ken Gruhl",
-    artist: "",
+    artist: "Dave Campbell, Ottie Tâm",
     theme: "Food, Animals",
     mechanics: "Speed Matching, Hand Management",
     players: "2–8",
-    time: "10–15 min",
+    time: "10–30 min",
     age: "8+",
     rating: "",
     difficulty: "Easy",
@@ -881,15 +887,15 @@ const games = [
     name: "Taco Kitten Pizza",
     category: "Kids",
     tagline: "Slap the pile when the card matches the word you just said.",
-    year: "",
+    year: "2023",
     publisher: "Big Potato Games",
-    designer: "",
+    designer: "Dave Campbell, Thierry Denoual",
     artist: "",
     theme: "Food, Animals",
     mechanics: "Speed Matching, Hand Management",
-    players: "2–8",
-    time: "10 min",
-    age: "",
+    players: "2–6",
+    time: "5 min",
+    age: "4+",
     rating: "",
     difficulty: "Easy",
     coop: false,
@@ -904,7 +910,7 @@ const games = [
     year: "2005",
     publisher: "Gamewright",
     designer: "Miranda Evarts",
-    artist: "",
+    artist: "Jimmy Pickering",
     theme: "Fairy Tale",
     mechanics: "Hand Management, Take That, Set Collection",
     players: "2–5",
@@ -921,10 +927,10 @@ const games = [
     name: "Sleeping Queens 2: The Rescue!",
     category: "Kids",
     tagline: "A second set of queens, with new trouble getting in the way.",
-    year: "",
+    year: "2022",
     publisher: "Gamewright",
     designer: "Miranda Evarts",
-    artist: "",
+    artist: "Jimmy Pickering",
     theme: "Fairy Tale",
     mechanics: "Hand Management, Take That, Set Collection",
     players: "2–5",
@@ -941,15 +947,15 @@ const games = [
     name: "Soundiculous!",
     category: "Party",
     tagline: "Make the noise on the card and hope somebody guesses it.",
-    year: "",
+    year: "2018",
     publisher: "Big Potato Games",
-    designer: "",
-    artist: "",
+    designer: "Hazel Reynolds",
+    artist: "Hazel Reynolds",
     theme: "Humour",
     mechanics: "Acting, Team Play, Real Time",
-    players: "",
-    time: "",
-    age: "",
+    players: "3–10",
+    time: "10–60 min",
+    age: "8+",
     rating: "",
     difficulty: "Easy",
     coop: false,
@@ -961,14 +967,14 @@ const games = [
     name: "Articulate! for Kids",
     category: "Kids",
     tagline: "Describe the word without saying the word, fast.",
-    year: "",
+    year: "2006",
     publisher: "Drumond Park",
-    designer: "",
+    designer: "Alexander Duncan, Claire McCool",
     artist: "",
     theme: "Words",
     mechanics: "Team Play, Real Time, Communication Limits",
     players: "4–20",
-    time: "",
+    time: "30–90 min",
     age: "6+",
     rating: "",
     difficulty: "Easy",
@@ -1001,7 +1007,7 @@ const games = [
     name: "Uno: Lilo & Stitch",
     category: "Kids",
     tagline: "Uno with a themed deck and one extra rule card.",
-    year: "",
+    year: "2025",
     publisher: "Mattel",
     designer: "",
     artist: "",
@@ -1021,10 +1027,10 @@ const games = [
     name: "Outfoxed!",
     category: "Kids",
     tagline: "A cooperative whodunnit about a stolen pot pie.",
-    year: "2015",
+    year: "2014",
     publisher: "Gamewright",
-    designer: "Shanon Lyon",
-    artist: "",
+    designer: "Colt Tipaton-Johnson, Shanon Lyon, Marisa Peña",
+    artist: "Mélanie Grandgirard",
     theme: "Animals, Mystery",
     mechanics: "Cooperative, Deduction, Dice Rolling",
     players: "2–4",
@@ -1041,14 +1047,14 @@ const games = [
     name: "Cauldron Quest",
     category: "Kids",
     tagline: "Brew the antidote before the wizard blocks every path.",
-    year: "",
+    year: "2015",
     publisher: "Peaceable Kingdom",
-    designer: "",
+    designer: "Colt Tipaton-Johnson, Shanon Lyon, Marisa Peña",
     artist: "",
     theme: "Fantasy",
     mechanics: "Cooperative, Dice Rolling",
     players: "2–4",
-    time: "",
+    time: "20 min",
     age: "6+",
     rating: "",
     difficulty: "Easy",
@@ -1061,10 +1067,10 @@ const games = [
     name: "Zombie Teenz Evolution",
     category: "Family",
     tagline: "A cooperative campaign about teenagers and a zombie outbreak.",
-    year: "2021",
+    year: "2020",
     publisher: "Le Scorpion Masqué",
     designer: "Annick Lobet",
-    artist: "",
+    artist: "Nikao, Rémy Tornior",
     theme: "Zombies",
     mechanics: "Cooperative, Legacy, Dice Rolling",
     players: "2–4",
@@ -1081,10 +1087,10 @@ const games = [
     name: "Snug as a Bug in a Rug!",
     category: "Kids",
     tagline: "Get the bugs under the rug before the stink bugs arrive.",
-    year: "",
+    year: "2012",
     publisher: "Peaceable Kingdom",
-    designer: "",
-    artist: "",
+    designer: "Peggy Brown",
+    artist: "Ingela Peterson Arrhenius",
     theme: "Bugs",
     mechanics: "Cooperative, Matching",
     players: "2–4",
@@ -1104,7 +1110,7 @@ const games = [
     year: "2020",
     publisher: "Blue Orange Games",
     designer: "Bruno Cathala, Marie Fort, Wilfried Fort",
-    artist: "",
+    artist: "Maëva da Silva, Christine Deschamps",
     theme: "Dragons",
     mechanics: "Tile Drafting, Tile Placement",
     players: "2–4",
@@ -1121,14 +1127,14 @@ const games = [
     name: "Sum Swamp",
     category: "Kids",
     tagline: "Addition and subtraction dressed up as a swamp race.",
-    year: "",
+    year: "2002",
     publisher: "Learning Resources",
     designer: "",
     artist: "",
     theme: "Numbers",
     mechanics: "Dice Rolling, Roll and Move",
     players: "2–4",
-    time: "",
+    time: "20 min",
     age: "5+",
     rating: "",
     difficulty: "Easy",
@@ -1141,18 +1147,18 @@ const games = [
     name: "Monkey Around",
     category: "Kids",
     tagline: "Movement prompts for toddlers, one card at a time.",
-    year: "",
+    year: "2017",
     publisher: "Peaceable Kingdom",
     designer: "",
-    artist: "",
+    artist: "Deborah van de Leijgraaf",
     theme: "Animals",
     mechanics: "Physical Activity",
-    players: "",
-    time: "",
+    players: "1–4",
+    time: "10 min",
     age: "2+",
     rating: "",
     difficulty: "Easy",
-    coop: false,
+    coop: true,
     blurb: "Cards ask a toddler to hop, wiggle or balance alongside a plush banana. Aimed at moving about rather than at winning.",
     sleeves: "",
     image: "pictures/Monkey Around.png",
@@ -1181,9 +1187,9 @@ const games = [
     name: "Shelby's Snack Shack Game",
     category: "Kids",
     tagline: "A counting game about a pug and a pile of bones.",
-    year: "",
+    year: "2013",
     publisher: "Educational Insights",
-    designer: "",
+    designer: "Marcia Gresko",
     artist: "",
     theme: "Animals",
     mechanics: "Counting, Dexterity",
@@ -1221,19 +1227,19 @@ const games = [
     name: "Guess in 10: Animal Kingdom",
     category: "Kids",
     tagline: "Ten yes or no questions to name the animal.",
-    year: "",
+    year: "2022",
     publisher: "Skillmatics",
     designer: "",
     artist: "",
     theme: "Animals",
     mechanics: "Deduction",
-    players: "",
-    time: "",
-    age: "",
+    players: "2–6",
+    time: "30 min",
+    age: "3+",
     rating: "",
     difficulty: "Easy",
     coop: false,
-    blurb: "",
+    blurb: "A trivia game about animals.",
     sleeves: "",
     image: "pictures/Guess in 10 Animal Kingdom.jpeg",
   },
@@ -1241,34 +1247,34 @@ const games = [
     name: "Cascadia Junior",
     category: "Kids",
     tagline: "A lighter Cascadia for younger players.",
-    year: "",
+    year: "2025",
     publisher: "AEG / Flatout Games",
-    designer: "",
-    artist: "",
+    designer: "Fertessa Allyse, Randy Flynn",
+    artist: "Beth Sobel",
     theme: "Nature",
     mechanics: "Tile Placement, Set Collection",
-    players: "",
-    time: "",
-    age: "",
+    players: "2–4",
+    time: "15–30 min",
+    age: "6+",
     rating: "",
     difficulty: "Easy",
     coop: false,
-    blurb: "",
+    blurb: "Match habitats and wildlife to build the most harmonious ecosystem.",
     sleeves: "",
     image: "pictures/Cascadia Junior.webp",
   },
   {
     name: "Snail Sprint!",
     category: "Kids",
-    tagline: "",
-    year: "",
+    tagline: "Lucky dice rolls and skillful moves get your snails to the winner's podium.",
+    year: "2018",
     publisher: "HABA",
-    designer: "",
-    artist: "",
+    designer: "Marie Fort, Wilfried Fort",
+    artist: "Gabriela Silveira",
     theme: "Animals",
     mechanics: "Racing, Dice Rolling",
-    players: "",
-    time: "",
+    players: "2–4",
+    time: "15 min",
     age: "5+",
     rating: "",
     difficulty: "Easy",
@@ -1301,7 +1307,7 @@ const games = [
 
 /* One block per type in the table, in this order, with each block sorted by
    title. Add a game anywhere in the list above and it sorts itself. */
-const CATEGORY_ORDER = ["Strategy", "Family", "Card Game", "Party", "Kids", "Deduction/Horror"];
+const CATEGORY_ORDER = ["Strategy", "Family", "Card Game", "Party", "Kids", "Horror & Mystery"];
 games.sort((a, b) =>
   CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category) ||
   a.name.localeCompare(b.name, 'en', { numeric: true, sensitivity: 'base' })
@@ -1406,7 +1412,15 @@ function renderTable(list){
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="row-title"><a href="#game-${slug(g.name)}">${g.name}</a></td>
+      <td class="row-title">
+        <a href="#game-${slug(g.name)}">
+          <span class="thumb" aria-hidden="true" style="--tag-color:${colors[g.category] || '#555'}">
+            <span class="thumb-fallback">${initials(g.name)}</span>
+            <img class="thumb-img" alt="" loading="lazy">
+          </span>
+          <span>${g.name}</span>
+        </a>
+      </td>
       <td>${g.category}</td>
       <td>${band(g.rating)}</td>
       <td>${band(g.difficulty)}</td>
@@ -1415,6 +1429,7 @@ function renderTable(list){
       <td class="num">${g.coop ? '<span class="flag">Coop</span>' : ''}</td>
       <td class="num">${solo ? '<span class="flag">Solo</span>' : (two ? '<span class="flag">2 Player</span>' : '')}</td>
     `;
+    loadCover(tr.querySelector('.thumb-img'), g);
     // The whole row is a target, not just the title text.
     tr.addEventListener('click', e => {
       if(e.target.tagName !== 'A') tr.querySelector('a').click();
