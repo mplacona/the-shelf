@@ -67,6 +67,9 @@
   .chip:hover{ border-color:#c9d0dc; color:var(--ink); }
   .chip:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
   .chip.active{ background:var(--ink); border-color:var(--ink); color:#fff; font-weight:600; }
+  .chip.wish{ color:#9a3412; border-color:#f3d0b5; background:#fff7f1; }
+  .chip.wish:hover{ border-color:#e8b48a; color:#9a3412; }
+  .chip.wish.active{ background:#9a3412; border-color:#9a3412; color:#fff; }
 
   .switch{
     margin-left:auto;
@@ -261,6 +264,7 @@
     <button class="chip" data-filter="Party">Party</button>
     <button class="chip" data-filter="Kids">Kids</button>
     <button class="chip" data-filter="Horror & Mystery">Horror &amp; Mystery</button>
+    <button class="chip wish" data-filter="wishlist" id="wishChip">Wishlist</button>
     <button class="switch" id="switchView"></button>
   </div>
 
@@ -293,7 +297,7 @@
     <div class="empty" id="emptyCards" style="display:none;">No games match that search.</div>
   </section>
 
-  <footer>Catalogued from the shelf, the top of the cabinet, and a few loose stacks — <span id="totalCount"></span> games in all.</footer>
+  <footer>Catalogued from the shelf — <span id="totalCount"></span> games in the collection, and <span id="wishCount"></span> on the wishlist.</footer>
 </div>
 
 <script>
@@ -316,7 +320,8 @@ const colors = {
   "Card Game": "#8a3c2e",
   "Party": "#6b4a8a",
   "Kids": "#2f6d8c",
-  "Horror & Mystery": "#3a3a3a"
+  "Horror & Mystery": "#3a3a3a",
+  "Wishlist": "#9a3412"
 };
 
 /* Games are sorted into CATEGORY_ORDER below on load, so you can add a new
@@ -1303,6 +1308,384 @@ const games = [
     sleeves: "",
     image: "pictures/1, 2, 3.webp",
   },
+  {
+    name: "Mycelia",
+    category: "Strategy",
+    tagline: "Build a fungi kingdom through growth, death, and rebirth.",
+    year: "2024",
+    publisher: "Split Stone Games",
+    designer: "J.J. Neville",
+    artist: "J.J. Neville",
+    theme: "Nature",
+    mechanics: "Open Drafting, Network Building",
+    players: "1–4",
+    time: "40–90 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Spread mycelium across the forest, scoring the networks you grow before they die back and start again.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Deduckto",
+    category: "Kids",
+    tagline: "Follow the clues and name the secret duck.",
+    year: "2023",
+    publisher: "Gamewright",
+    designer: "Robert Kerr",
+    artist: "Kwanchai Moriya",
+    theme: "Animals, Deduction",
+    mechanics: "Deduction",
+    players: "2–4",
+    time: "15 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Each player is hunting a hidden suspect. Clues narrow the flock until someone can name their duck.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "The White Castle",
+    category: "Strategy",
+    tagline: "A tight dice euro set in the shadow of Himeji Castle.",
+    year: "2023",
+    publisher: "Devir",
+    designer: "Isra C., Shei S.",
+    artist: "Joan Guardiet",
+    theme: "Medieval, Japan",
+    mechanics: "Dice Drafting, Action Drafting",
+    players: "1–4",
+    time: "80 min",
+    age: "12+",
+    rating: "",
+    difficulty: "Hard",
+    coop: false,
+    blurb: "Draft dice to place workers, climb the castle, and train courtiers. Three rounds, and every action has to count.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Splendor",
+    category: "Strategy",
+    tagline: "Collect gems, buy developments, and attract the nobility.",
+    year: "2014",
+    publisher: "Space Cowboys",
+    designer: "Marc André",
+    artist: "Pascal Quidault",
+    theme: "Renaissance",
+    mechanics: "Open Drafting, Engine Building, Set Collection",
+    players: "2–4",
+    time: "30 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Take gem tokens and spend them on developments that make the next purchase cheaper. Fifteen points, or the most when the deck runs thin, wins.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Dragonkeepers",
+    category: "Card Game",
+    tagline: "Herd dragons and cast spells to raise what they are worth.",
+    year: "2023",
+    publisher: "Kosmos",
+    designer: "Michael Menzel",
+    artist: "Michael Menzel",
+    theme: "Fantasy",
+    mechanics: "Open Drafting, Set Collection, Hand Management",
+    players: "2–4",
+    time: "20 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Draft dragon cards into sets and play spells that change their value before the round scores.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Gnome Hollow",
+    category: "Strategy",
+    tagline: "Grow mushroom rings, harvest them, and haul the crop to market.",
+    year: "2024",
+    publisher: "Levity Games",
+    designer: "Ammon Anderson",
+    artist: "Ammon Anderson, Patrick Spaziante",
+    theme: "Fantasy, Farming",
+    mechanics: "Tile Placement, Set Collection",
+    players: "2–4",
+    time: "45–60 min",
+    age: "12+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Gnomes lay paths and close mushroom rings. Harvested mushrooms have to be carried to the right market before anyone else claims the sale.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Dorfromantik",
+    category: "Family",
+    tagline: "A quiet cooperative landscape, one hexagonal tile at a time.",
+    year: "2022",
+    publisher: "Pegasus Spiele",
+    designer: "Michael Palm, Lukas Zach",
+    artist: "Paul Riebe",
+    theme: "Countryside, Puzzle",
+    mechanics: "Tile Placement, Cooperative, Pattern Building",
+    players: "1–6",
+    time: "30–60 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "The board-game version of the video game. Everyone lays tiles to complete tasks and grow a single shared countryside.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Catan Junior",
+    category: "Kids",
+    tagline: "Catan rebuilt for younger players, with pirates instead of robbers.",
+    year: "2012",
+    publisher: "Catan Studio",
+    designer: "Klaus Teuber",
+    artist: "Patricia Raubo",
+    theme: "Pirates",
+    mechanics: "Dice Rolling, Trading, Network Building",
+    players: "2–4",
+    time: "30 min",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Roll, trade, and build along the coast. The first pirate to finish their lair wins.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Exit: The Game – Kids",
+    category: "Kids",
+    tagline: "Escape-room puzzles built for younger players, solved together.",
+    year: "2018",
+    publisher: "Kosmos",
+    designer: "Inka Brand, Markus Brand",
+    artist: "",
+    theme: "Puzzle",
+    mechanics: "Cooperative, Deduction",
+    players: "1–4",
+    time: "15–20 min",
+    age: "6+",
+    rating: "",
+    difficulty: "Easy",
+    coop: true,
+    blurb: "The kids line of Exit. Picture riddles and simple codes replace the denser adult puzzles, and the table either escapes together or does not.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Museum Suspects",
+    category: "Family",
+    tagline: "A short deduction game set inside a museum.",
+    year: "2022",
+    publisher: "Blue Orange Games",
+    designer: "Phil Walker-Harding",
+    artist: "Maxime Sarthou",
+    theme: "Mystery, Deduction",
+    mechanics: "Deduction, Bluffing",
+    players: "2–4",
+    time: "20–25 min",
+    age: "8+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Clues point at a culprit among the exhibits. Read them carefully, because some of what you are shown is there to mislead you.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Bunny Kingdom",
+    category: "Strategy",
+    tagline: "Draft cards, settle carrot fields, and build the biggest warren.",
+    year: "2017",
+    publisher: "IELLO",
+    designer: "Richard Garfield",
+    artist: "Paul Mafayon",
+    theme: "Animals, Medieval",
+    mechanics: "Card Drafting, Area Majority, Grid Coverage",
+    players: "2–4",
+    time: "40–60 min",
+    age: "12+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Cards are drafted and used either as territory on a shared map or as buildings and missions that score the regions you hold.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Wyrmspan",
+    category: "Strategy",
+    tagline: "Wingspan’s engine, rebuilt as a sanctuary for dragons.",
+    year: "2024",
+    publisher: "Stonemaier Games",
+    designer: "Connie Vogelmann",
+    artist: "Clémentine Campardou",
+    theme: "Fantasy, Dragons",
+    mechanics: "Hand Management, Open Drafting, Engine Building",
+    players: "1–5",
+    time: "90 min",
+    age: "14+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Excavate a cave, then tuck dragons into it so a single action can cascade down the row. Longer and heavier than Wingspan.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Everdell",
+    category: "Strategy",
+    tagline: "A woodland city of critters and the buildings they work in.",
+    year: "2018",
+    publisher: "Starling Games",
+    designer: "James A. Wilson",
+    artist: "Andrew Bosley",
+    theme: "Animals, City Building",
+    mechanics: "Worker Placement, Tableau Building, Hand Management",
+    players: "1–4",
+    time: "40–80 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Workers gather resources through the seasons. Critters are cheaper to play when the matching construction is already in your city.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Wingspan",
+    category: "Strategy",
+    tagline: "Attract birds to a wildlife preserve and chain their powers.",
+    year: "2019",
+    publisher: "Stonemaier Games",
+    designer: "Elizabeth Hargrave",
+    artist: "Natalia Rojas, Ana María Martínez",
+    theme: "Birds, Nature",
+    mechanics: "Engine Building, Card Drafting, Dice Rolling",
+    players: "1–5",
+    time: "40–70 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Birds go into forest, grassland, or wetland. The stronger the row, the further one action travels along it.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Parks",
+    category: "Family",
+    tagline: "Hike a year of seasons and visit the national parks.",
+    year: "2019",
+    publisher: "Keymaster Games",
+    designer: "Henry Audubon",
+    artist: "Fifty-Nine Parks Print Series",
+    theme: "Nature, Hiking",
+    mechanics: "Worker Placement, Set Collection",
+    players: "1–5",
+    time: "30–60 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Hikers move along a trail of actions. Resources they pick up are spent to visit park cards, and the season ends when everyone has reached the campfire.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Cascadia",
+    category: "Family",
+    tagline: "Pair habitats and wildlife into one connected ecosystem.",
+    year: "2021",
+    publisher: "Flatout Games / AEG",
+    designer: "Randy Flynn",
+    artist: "Beth Sobel",
+    theme: "Nature",
+    mechanics: "Tile Placement, Pattern Building, Set Collection",
+    players: "1–4",
+    time: "30–45 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Easy",
+    coop: false,
+    blurb: "Each turn you take a habitat tile and an animal token and add them to your own landscape. Scoring cards change which patterns are worth chasing.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Calico",
+    category: "Family",
+    tagline: "Sew a quilt, collect buttons, and attract the neighbourhood cats.",
+    year: "2020",
+    publisher: "Flatout Games / AEG",
+    designer: "Kevin Russ",
+    artist: "Beth Sobel",
+    theme: "Animals, Quilting",
+    mechanics: "Tile Placement, Pattern Building",
+    players: "1–4",
+    time: "30–45 min",
+    age: "10+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "Patchwork tiles have to satisfy colour groups, button goals, and the cats, who only sit where their favourite patterns show up.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
+  {
+    name: "Tiny Towns",
+    category: "Strategy",
+    tagline: "Build a town on a four-by-four grid, and hope the next resource fits.",
+    year: "2019",
+    publisher: "AEG",
+    designer: "Peter McPherson",
+    artist: "Gong Studios",
+    theme: "City Building",
+    mechanics: "Pattern Building, Grid Coverage",
+    players: "1–6",
+    time: "45–60 min",
+    age: "14+",
+    rating: "",
+    difficulty: "Moderate",
+    coop: false,
+    blurb: "One player names a resource and everyone places it. Buildings replace specific patterns, so a crowded grid is as much a plan as a problem.",
+    sleeves: "",
+    image: "",
+    wishlist: true,
+  },
 ];
 
 /* One block per type in the table, in this order, with each block sorted by
@@ -1398,11 +1781,12 @@ function renderTable(list){
 
   let lastCategory = null;
   list.forEach(g => {
-    if(g.category !== lastCategory){
-      lastCategory = g.category;
+    const group = activeFilter === 'wishlist' ? 'Wishlist' : g.category;
+    if(group !== lastCategory){
+      lastCategory = group;
       const head = document.createElement('tr');
       head.className = 'group';
-      head.innerHTML = `<td colspan="8"><span style="--tag-color:${colors[g.category] || '#555'}"></span>${g.category}</td>`;
+      head.innerHTML = `<td colspan="8"><span style="--tag-color:${colors[group] || '#555'}"></span>${group}</td>`;
       rows.appendChild(head);
     }
 
@@ -1499,12 +1883,19 @@ function renderCards(list){
 
 function render(){
   const q = search.value.trim().toLowerCase();
-  const list = games.filter(g => {
-    const matchesFilter = activeFilter === 'all' || g.category === activeFilter;
+  const shelf = games.filter(g => !g.wishlist);
+  const wish = games.filter(g => g.wishlist);
+  const pool = activeFilter === 'wishlist' ? wish : shelf;
+  const list = pool.filter(g => {
+    const matchesFilter = activeFilter === 'all' || activeFilter === 'wishlist' || g.category === activeFilter;
     return matchesFilter && g.name.toLowerCase().includes(q);
   });
+  if(activeFilter === 'wishlist'){
+    list.sort((a, b) => a.name.localeCompare(b.name, 'en', { numeric: true, sensitivity: 'base' }));
+  }
 
-  countLine.textContent = `Showing ${list.length} of ${games.length} games`;
+  const label = activeFilter === 'wishlist' ? 'wishlist' : 'collection';
+  countLine.textContent = `Showing ${list.length} of ${pool.length} games in the ${label}`;
   renderTable(list);
   renderCards(list);
 }
@@ -1547,8 +1938,12 @@ switchBtn.addEventListener('click', () => {
 });
 window.addEventListener('hashchange', route);
 
-document.getElementById('allChip').textContent = `All (${games.length})`;
-document.getElementById('totalCount').textContent = games.length;
+const shelfCount = games.filter(g => !g.wishlist).length;
+const wishCount = games.filter(g => g.wishlist).length;
+document.getElementById('allChip').textContent = `All (${shelfCount})`;
+document.getElementById('wishChip').textContent = `Wishlist (${wishCount})`;
+document.getElementById('totalCount').textContent = shelfCount;
+document.getElementById('wishCount').textContent = wishCount;
 
 render();
 route();
